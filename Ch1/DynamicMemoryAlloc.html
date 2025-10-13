@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Memory Allocation with malloc in C</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Chapter: Dynamic Memory Allocation with <code>malloc</code> in C</h1>
+            <p><code>malloc</code> (memory allocation) is a standard library function in C used to allocate a specified amount of memory dynamically during program execution. This allows programs to obtain memory from the heap at runtime instead of using fixed-size memory declared at compile time.</p>
+            <h2>1. What is <code>malloc</code>?</h2>
+            <p><code>malloc</code> allocates a block of memory of a requested size (in bytes) and returns a pointer to the beginning of this block. If allocation fails (e.g., insufficient memory), it returns <code>NULL</code>.</p>
+            <h2>2. Syntax</h2>
+            <pre><code>#include <stdlib.h>
+void* malloc(size_t size);</code></pre>
+
+            <ul>
+                <li><code>size</code>: number of bytes to allocate</li>
+                <li>Returns: pointer to allocated memory (void*)</li>
+            </ul>
+            <h2>3. Using <code>malloc</code> for struct allocation</h2>
+            <p>Because <code>malloc</code> returns <code>void*</code>, you need to cast it to the appropriate pointer type.</p>
+            <pre><code>Node* newNode = (Node*) malloc(sizeof(Node));
+if (newNode == NULL) {
+    printf("Memory allocation failed!\n");
+    exit(1);
+}</code></pre>
+            <h2>4. Example: Allocating a Node</h2>
+            <pre><code>typedef struct Node {
+    char value;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createNode(char val) {
+    Node* n = (Node*) malloc(sizeof(Node));
+    if (n == NULL) {
+        printf("Error allocating memory\n");
+        exit(1);
+    }
+    n->value = val;
+    n->left = NULL;
+    n->right = NULL;
+    return n;
+}</code></pre>
+
+            <h2>5. Important Notes</h2>
+            <ul>
+                <li>Memory allocated by <code>malloc</code> is uninitialized — it may contain garbage values.</li>
+                <li>Always check the returned pointer against <code>NULL</code> to ensure allocation succeeded.</li>
+                <li>Use <code>free()</code> to release memory when it is no longer needed, to avoid memory leaks.</li>
+            </ul>
+            <h2>6. Freeing Allocated Memory</h2>
+            <pre><code>free(newNode); // releases the memory back to the system</code></pre>
+            <h2>7. Example Usage Putting It All Together</h2>
+            <pre><code>int main() {
+    Node* root = createNode('&');
+    root->left = createNode('A');
+    root->right = createNode('B');
+    text
+    printf("Root: %c\n", root->value);
+    printf("Left child: %c\n", root->left->value);
+    printf("Right child: %c\n", root->right->value);
+
+    // Free allocated memory
+    free(root->left);
+    free(root->right);
+    free(root);
+    return 0;
+}</code></pre>
+
+            <h2>8. Summary</h2>
+            <ul>
+                <li><code>malloc</code> allocates memory dynamically at runtime.</li>
+                <li>Always cast the returned <code>void*</code> pointer to the required pointer type.</li>
+                <li>Check for <code>NULL</code> to handle allocation failures.</li>
+                <li>Free allocated memory with <code>free()</code> to avoid leaks.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Order Traversal Function</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>inorderTraversal</code> Function</h1>
+
+        <pre><code>void inorderTraversal(Node* root) {
+    if (root == NULL) return;
+    
+    if (isOperator(root->value)) {
+        printf("(");
+    }
+    
+    if (root->value == '~') {
+        printf("~");
+        inorderTraversal(root->left);
+    } else {
+        inorderTraversal(root->left);
+        printf("%c", root->value);
+        inorderTraversal(root->right);
+    }
+    
+    if (isOperator(root->value)) {
+        printf(")");
+    }
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            Performs an in-order traversal of a binary parse tree to reconstruct and print the infix (human-readable) version of a logical expression. Adds parentheses around operators to preserve precedence.
+          </li>
+        </ul>
+
+        <h2>Line-by-Line Explanation</h2>
+        <ul>
+          <li>
+            <code>if (root == NULL) return;</code><br>
+            Base case for the recursion: if the current node is <code>NULL</code>, do nothing and stop processing further down this branch.
+          </li>
+
+          <li>
+            <code>if (isOperator(root->value)) { printf("("); }</code><br>
+            If the current node is an operator (e.g. '+', '-', '*', '~', '>'), print an opening parenthesis to group the subexpression and ensure correct infix precedence.
+          </li>
+
+          <li>
+            <code>if (root->value == '~') { ... }</code><br>
+            Handles the unary NOT operator ('~'). Prints the operator first, then recursively prints its left subtree (the operand or subexpression being negated).
+          </li>
+
+          <li>
+            <code>else { ... }</code><br>
+            For all other nodes (binary operators and operands):
+            <ul>
+              <li>Recursively processes and prints the left subtree first.</li>
+              <li>Prints the current node’s value (either an operator or operand character).</li>
+              <li>Recursively processes and prints the right subtree.</li>
+            </ul>
+            This order ensures proper infix notation (left operand, then operator, then right operand).
+          </li>
+
+          <li>
+            <code>if (isOperator(root->value)) { printf(")"); }</code><br>
+            If the current node is an operator, prints a closing parenthesis to close the grouped subexpression.
+          </li>
+        </ul>
+
+        <h2>Key Concepts</h2>
+        <ul>
+          <li><b>Recursion:</b> Function calls itself for left and right children, naturally visiting all nodes in in-order sequence.</li>
+          <li><b>In-order Traversal:</b> For binary operators, the left subtree is visited, then the operator printed, then the right subtree.</li>
+          <li><b>Parentheses:</b> Correctly groups each operator and its operands, handling precedence and subexpression grouping as in standard algebraic logic.</li>
+          <li><b>Unary Operator Handling:</b> NOT (<code>~</code>) is treated specially as it only has a left child.</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>// Suppose root represents parse tree for:
+// Prefix: '* + A B C'
+// Inorder printout: ((A+B)*C)
+inorderTraversal(root); // Output: ((A+B)*C)
+</code></pre>
+    </div>
+</body>
+</html>

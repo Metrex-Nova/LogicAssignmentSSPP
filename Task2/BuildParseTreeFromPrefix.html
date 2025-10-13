@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Parse Tree from Prefix</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: Parse Tree Construction from Prefix Expression</h1>
+
+        <pre><code>// TASK 2: Build parse tree from prefix expression
+Node* prefixToTree(char* prefix, int* index) {
+    while (prefix[*index] == ' ') {
+        (*index)++;
+    }
+    
+    if (prefix[*index] == '\0') {
+        return NULL;
+    }
+    
+    char current = prefix[*index];
+    (*index)++;
+    
+    Node* node = createNode(current);
+    
+    if (isOperator(current)) {
+        node->left = prefixToTree(prefix, index);
+        
+        if (isBinaryOperator(current)) {
+            node->right = prefixToTree(prefix, index);
+        }
+    }
+    
+    return node;
+}
+
+Node* buildTreeFromPrefix(char* prefix) {
+    int index = 0;
+    return prefixToTree(prefix, &index);
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            Constructs a binary parse tree from a prefix notation (Polish notation) expression, where each operator appears before its operands.
+          </li>
+        </ul>
+
+        <h2>Line-by-Line Explanation: <code>prefixToTree</code></h2>
+        <ul>
+          <li>
+            <code>while (prefix[*index] == ' ') { (*index)++; }</code><br>
+            Skips over any spaces in the prefix string so that the parsing logic always starts at the next relevant character.
+          </li>
+          <li>
+            <code>if (prefix[*index] == '\0') { return NULL; }</code><br>
+            Checks for the end of the input string. If reached, returns <code>NULL</code> signalling there are no more nodes to add.
+          </li>
+          <li>
+            <code>char current = prefix[*index]; (*index)++;</code><br>
+            Reads the current character from the prefix string and advances the index pointer to the next position.
+          </li>
+          <li>
+            <code>Node* node = createNode(current);</code><br>
+            Allocates a new <code>Node</code> (on the heap) representing <code>current</code>. This could be either an operator (like '+', '*', '~') or an operand (such as 'A', 'B').
+          </li>
+          <li>
+            <code>if (isOperator(current)) { ... }</code><br>
+            Checks if the symbol is an operator.
+            <ul>
+              <li>If it is, it recursively sets <code>node->left</code> by parsing the next portion of the prefix expression (<b>left subtree</b>).</li>
+              <li>If the operator is binary (<code>isBinaryOperator(current)</code>), it also parses and assigns <code>node->right</code> (<b>right subtree</b>).</li>
+              <li>If the operator is unary (like '~'), only the left child is constructed.</li>
+            </ul>
+          </li>
+          <li>
+            <code>return node;</code><br>
+            Returns the subtree rooted at this node, propagating the growing parse tree upward with each call.
+          </li>
+        </ul>
+
+        <h2><code>buildTreeFromPrefix</code> Function</h2>
+        <ul>
+          <li>
+            <code>int index = 0;</code><br>
+            Initializes the index counter to 0—used to parse the prefix string from the beginning.
+          </li>
+          <li>
+            <code>return prefixToTree(prefix, &index);</code><br>
+            Starts the recursive parsing and builds the complete parse tree, returning a pointer to the root node.
+          </li>
+        </ul>
+
+        <h2>Key Concepts</h2>
+        <ul>
+          <li><b>Recursive Parsing:</b> The structure and depth of prefix notation directly determines the structure of the parse tree built.</li>
+          <li><b>Dynamic Memory:</b> Each call to <code>createNode</code> allocates a new node; remember to free all nodes after use with a function like <code>freeTree</code> to avoid memory leaks.</li>
+          <li><b>Index Variable:</b> The <code>index</code> integer is updated on each character read, and its pointer ensures each recursive call works on the current position in the prefix string.</li>
+          <li><b>Operator Identification:</b> Only operators generate children; operands (like variables) become leaf nodes.</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>Node* root = buildTreeFromPrefix("* + A B C");
+// Builds tree for prefix: "* + A B C"
+// root represents "*" operator; root->left is "+" subtree; root->right is "C" leaf
+</code></pre>
+    </div>
+</body>
+</html>

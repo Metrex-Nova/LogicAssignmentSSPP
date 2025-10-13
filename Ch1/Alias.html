@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Alias in C</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="chapter-content">
+    <h2>1. Alias: <code>typedef</code></h2>
+    <p>
+        <code>typedef</code> lets you create an alias (nickname) for a type. This is especially useful for struct types:
+    </p>
+    <pre><code>typedef struct Student Student;
+// Now you can write:
+Student s2;</code></pre>
+    <p>
+        You can also create pointer aliases:
+    </p>
+    <pre><code>typedef struct Student* StudentPtr;
+StudentPtr ps = &s2;</code></pre>
+    </div>
+</body>
+
+</html>

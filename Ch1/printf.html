@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter: printf Statement in C</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Chapter: <code>printf</code> Statement in C</h1>
+
+        <p><code>printf()</code> is one of the most important functions in C for displaying output. It allows you to print text, numbers, variables, and even memory addresses to the screen, using a <b>format string</b> to control how the output appears.</p>
+
+        <h2>1. Basic Usage</h2>
+        <pre><code>printf("Hello, World!\n");</code></pre>
+        <p>This prints the text <b>Hello, World!</b> followed by a newline.</p>
+
+        <h2>2. Format Specifiers</h2>
+        <p>Format specifiers are placeholders in the format string that tell <code>printf</code> how to display each value. Each specifier starts with <code>%</code> and is followed by a character indicating the type.</p>
+        <table>
+          <tr><th>Specifier</th><th>Type</th><th>Example</th></tr>
+          <tr><td><code>%d</code></td><td>int (decimal)</td><td><code>printf("%d", 42);</code> → 42</td></tr>
+          <tr><td><code>%f</code></td><td>float/double</td><td><code>printf("%f", 3.14);</code> → 3.140000</td></tr>
+          <tr><td><code>%c</code></td><td>char</td><td><code>printf("%c", 'A');</code> → A</td></tr>
+          <tr><td><code>%s</code></td><td>string</td><td><code>printf("%s", "Hello");</code> → Hello</td></tr>
+          <tr><td><code>%p</code></td><td>pointer (address)</td><td><code>printf("%p", ptr);</code> → 0x7ffee1a8</td></tr>
+          <tr><td><code>%u</code></td><td>unsigned int</td><td><code>printf("%u", 3000000000U);</code> → 3000000000</td></tr>
+          <tr><td><code>%x</code></td><td>hexadecimal</td><td><code>printf("%x", 255);</code> → ff</td></tr>
+          <tr><td><code>%o</code></td><td>octal</td><td><code>printf("%o", 8);</code> → 10</td></tr>
+        </table>
+
+        <h2>3. Printing Multiple Values</h2>
+        <pre><code>int a = 5;
+float b = 2.5;
+char c = 'Z';
+printf("a = %d, b = %.2f, c = %c\n", a, b, c);</code></pre>
+        <p><b>Output:</b> <code>a = 5, b = 2.50, c = Z</code></p>
+        <p>Note: <code>%.2f</code> prints <b>2 decimal places</b>.</p>
+
+        <h2>4. Escape Sequences</h2>
+        <p>Special characters can be printed using escape sequences:</p>
+        <ul>
+          <li><code>\n</code> : Newline</li>
+          <li><code>\t</code> : Tab</li>
+          <li><code>\\</code> : Backslash</li>
+          <li><code>\"</code> : Double quote</li>
+        </ul>
+        <pre><code>printf("Line1\nLine2\tTabbed\n");</code></pre>
+
+        <h2>5. Printing Pointers and Addresses</h2>
+        <pre><code>int x = 10;
+int *p = &x;
+printf("Address of x: %p\n", (void*)p);
+printf("Value at p: %d\n", *p);</code></pre>
+        <p><b>Output:</b> Shows the memory address and the value stored at that address.</p>
+
+        <h2>6. Formatting Output</h2>
+        <p>You can control width, precision, and alignment:</p>
+        <pre><code>printf("|%10d|\n", 123);   // Right-align in 10 spaces
+printf("|%-10d|\n", 123);  // Left-align in 10 spaces
+printf("%.3f\n", 3.14159); // 3 decimal places</code></pre>
+
+        <h2>7. Common Mistakes</h2>
+        <ul>
+          <li>Mismatch between format specifier and variable type (e.g., using <code>%d</code> for a <code>float</code>).</li>
+          <li>Forgetting to include <code>\n</code> for newlines.</li>
+          <li>Not casting pointers to <code>void*</code> when printing addresses.</li>
+        </ul>
+
+        <h2>8. Complete Example</h2>
+        <pre><code>#include <stdio.h>
+
+int main() {
+    int i = 42;
+    float f = 3.1415;
+    char ch = 'A';
+    char str[] = "Hello";
+    int *ptr = &i;
+
+    printf("Integer: %d\n", i);
+    printf("Float: %.2f\n", f);
+    printf("Char: %c\n", ch);
+    printf("String: %s\n", str);
+    printf("Pointer: %p\n", (void*)ptr);
+    printf("Hex: %x\n", i);
+    printf("Octal: %o\n", i);
+    return 0;
+}
+</code></pre>
+
+        <h2>9. Summary Table</h2>
+        <table>
+          <tr><th>Specifier</th><th>Type</th><th>Example Output</th></tr>
+          <tr><td>%d</td><td>int</td><td>42</td></tr>
+          <tr><td>%f</td><td>float/double</td><td>3.14</td></tr>
+          <tr><td>%c</td><td>char</td><td>A</td></tr>
+          <tr><td>%s</td><td>string</td><td>Hello</td></tr>
+          <tr><td>%p</td><td>pointer</td><td>0x7ffee1a8</td></tr>
+          <tr><td>%u</td><td>unsigned int</td><td>3000000000</td></tr>
+          <tr><td>%x</td><td>hexadecimal</td><td>2a</td></tr>
+          <tr><td>%o</td><td>octal</td><td>52</td></tr>
+        </table>
+
+        <h2>10. Key Takeaways</h2>
+        <ul>
+          <li><code>printf()</code> is essential for debugging and displaying results.</li>
+          <li>Always match format specifiers to variable types.</li>
+          <li>Use escape sequences for special formatting.</li>
+          <li>Control output width and precision for neat display.</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VarMapping varMap and varMapSize Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Explanation: <code>VarMapping varMap;</code> and <code>int varMapSize = 0;</code></h1>
+
+            <h2>1. <code>VarMapping varMap[100];</code></h2>
+            <ul>
+                <li>This line declares a <b>global array</b> named <code>varMap</code> with 100 elements, where each element is of type <code>VarMapping</code> (the struct we defined earlier).</li>
+                <li>Each <code>VarMapping</code> stores a mapping between a character variable (like 'A', 'B', 'P') and its corresponding integer variable (like 1, 2, 3).</li>
+                <li>Because it's a global variable (declared outside any function), <code>varMap</code> is accessible from anywhere in our code.</li>
+                <li>This array can hold up to 100 variable mappings, which is usually enough for most SAT or logic problems.</li>
+            </ul>
+
+            <h2>2. <code>int varMapSize = 0;</code></h2>
+            <ul>
+                <li>This declares a global integer variable <code>varMapSize</code> and initializes it to 0.</li>
+                <li><code>varMapSize</code> is used to keep track of how many entries in <code>varMap</code> are currently in use.</li>
+                <li>Whenever we add a new mapping to <code>varMap</code>, we increment <code>varMapSize</code> by 1.</li>
+                <li>This way, we only process the valid entries in <code>varMap</code> (from index 0 up to <code>varMapSize - 1</code>).</li>
+            </ul>
+
+            <h2>3. Example Usage</h2>
+            <pre><code>// Add a new mapping
+varMap[varMapSize].charVar = 'A';
+varMap[varMapSize].intVar = 1;
+varMapSize++;
+
+// Add another mapping
+varMap[varMapSize].charVar = 'B';
+varMap[varMapSize].intVar = 2;
+varMapSize++;
+
+// Loop through all mappings
+for (int i = 0; i < varMapSize; ++i) {
+    printf("%c maps to %d\n", varMap[i].charVar, varMap[i].intVar);
+}
+</code></pre>
+
+            <h2>4. Summary</h2>
+            <ul>
+                <li><code>varMap</code> is a fixed-size array for storing up to 100 variable mappings.</li>
+                <li><code>varMapSize</code> tracks how many mappings are currently stored and used.</li>
+                <li>This approach is simple and efficient for small to medium-sized problems, and avoids the need for dynamic memory allocation.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

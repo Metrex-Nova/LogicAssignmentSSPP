@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIMACSFormula and VarMapping Structures</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Line-by-Line Explanation: <code>DIMACSFormula</code> and <code>VarMapping</code> Structures</h1>
+
+            <h2>1. <code>DIMACSFormula</code> Structure</h2>
+            <pre><code>typedef struct {
+    Clause* clauses;
+    int numClauses;
+    int numVars;
+} DIMACSFormula;</code></pre>
+            <ul>
+                <li><b>typedef struct { ... } DIMACSFormula;</b><br>
+                    This defines an anonymous struct and creates a type alias <code>DIMACSFormula</code>. You can now declare variables of this type directly (e.g., <code>DIMACSFormula formula;</code>).</li>
+                <li><code>Clause* clauses;</code><br>
+                    This is a <b>pointer to an array of <code>Clause</code> structures</b>. Each <code>Clause</code> represents a single clause in the CNF formula. <br>
+                    <b>Memory allocation:</b> You typically use <code>malloc</code> to allocate space for the array of clauses at runtime, depending on how many clauses you need. For example:
+                    <pre><code>formula.clauses = (Clause*) malloc(numClauses * sizeof(Clause));
+if (formula.clauses == NULL) {
+    // handle allocation failure
+}</code></pre>
+                    This allocates enough memory for <code>numClauses</code> Clause structs and stores the address in <code>formula.clauses</code>.
+                </li>
+                <li><code>int numClauses;</code><br>
+                    Stores the <b>number of clauses</b> in the formula. This tells you how many elements are in the <code>clauses</code> array.</li>
+                <li><code>int numVars;</code><br>
+                    Stores the <b>number of unique variables</b> in the formula. This is useful for iterating over all possible variables or for memory allocation elsewhere.</li>
+            </ul>
+
+            <h3>Example: Allocating and Using <code>DIMACSFormula</code></h3>
+            <pre><code>// Suppose you want a formula with 3 clauses and 5 variables
+DIMACSFormula formula;
+formula.numClauses = 3;
+formula.numVars = 5;
+formula.clauses = (Clause*) malloc(formula.numClauses * sizeof(Clause));
+if (formula.clauses == NULL) {
+    printf("Memory allocation failed!\n");
+    exit(1);
+}
+// For each clause, you may also need to allocate memory for its literals:
+for (int i = 0; i < formula.numClauses; ++i) {
+    formula.clauses[i].size = 2; // e.g., each clause has 2 literals
+    formula.clauses[i].literals = (int*) malloc(2 * sizeof(int));
+    // Always check for NULL in real code
+}
+</code></pre>
+            <p><b>Memory Management:</b> When you're done, you must free all allocated memory:</p>
+            <pre><code>for (int i = 0; i < formula.numClauses; ++i) {
+    free(formula.clauses[i].literals);
+}
+free(formula.clauses);
+</code></pre>
+
+            <h2>2. <code>VarMapping</code> Structure</h2>
+            <pre><code>typedef struct {
+    char charVar;
+    int intVar;
+} VarMapping;</code></pre>
+            <ul>
+                <li><b>typedef struct { ... } VarMapping;</b><br>
+                    Defines an anonymous struct and creates a type alias <code>VarMapping</code>. This is used for mapping between character variable names and integer variable numbers (as required by DIMACS format).</li>
+                <li><code>char charVar;</code><br>
+                    Stores the character representation of a variable (e.g., 'A', 'B', 'P').</li>
+                <li><code>int intVar;</code><br>
+                    Stores the integer representation of the variable (e.g., 1, 2, 3). This is useful for mapping variables to DIMACS integer IDs.</li>
+            </ul>
+
+            <h3>Example: Allocating and Using <code>VarMapping</code></h3>
+            <pre><code>// Suppose you have 5 variables to map
+int numVars = 5;
+VarMapping* mappings = (VarMapping*) malloc(numVars * sizeof(VarMapping));
+if (mappings == NULL) {
+    printf("Memory allocation failed!\n");
+    exit(1);
+}
+// Assign mappings
+mappings.charVar = 'A'; mappings.intVar = 1;
+mappings.charVar = 'B'; mappings.intVar = 2;
+// ... and so on
+</code></pre>
+            <p>When done, free the memory:</p>
+            <pre><code>free(mappings);
+</code></pre>
+
+            <h2>3. <b>How <code>malloc</code> Works in These Structures</b></h2>
+            <ul>
+                <li><b>Dynamic allocation</b> allows you to create arrays of structs or arrays inside structs at runtime, based on the problem size.</li>
+                <li><b>Each pointer field</b> (like <code>clauses</code> or <code>literals</code>) must be assigned memory using <code>malloc</code> before you use it.</li>
+                <li><b>Always check</b> if <code>malloc</code> returns <code>NULL</code> to avoid crashes.</li>
+                <li><b>Always free</b> any memory you allocate with <code>malloc</code> to prevent memory leaks.</li>
+            </ul>
+
+            <h3>Summary Table</h3>
+            <table>
+                <tr><th>Field</th><th>Type</th><th>Purpose</th><th>Memory Allocation</th></tr>
+                <tr><td>clauses</td><td>Clause*</td><td>Array of clauses</td><td>malloc for array of Clause</td></tr>
+                <tr><td>numClauses</td><td>int</td><td>Number of clauses</td><td>Direct assignment</td></tr>
+                <tr><td>numVars</td><td>int</td><td>Number of variables</td><td>Direct assignment</td></tr>
+                <tr><td>charVar</td><td>char</td><td>Variable as character</td><td>Direct assignment</td></tr>
+                <tr><td>intVar</td><td>int</td><td>Variable as integer</td><td>Direct assignment</td></tr>
+            </table>
+
+            <p><b>Key Point:</b> Whenever you see a pointer in a struct (like <code>Clause* clauses</code> or <code>int* literals</code>), you must allocate memory for it before use, and free it when done. This is how C gives you control over memory, but also makes you responsible for managing it.</p>
+        </div>
+    </div>
+</body>
+
+</html>

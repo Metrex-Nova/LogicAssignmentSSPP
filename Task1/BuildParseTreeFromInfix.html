@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Parse Tree from Infix</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>buildParseTree</code> Function</h1>
+
+        <pre><code>Node* buildParseTree(char* infixFormula) {
+    index_pos = 0;
+    return parseExpression(infixFormula);
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            This function builds a binary syntax tree (parse tree) from an infix logical formula provided as a string. The parse tree visually represents the structure and hierarchy of operators and operands in the formula.
+          </li>
+          <li>
+            <code>index_pos = 0;</code><br>
+            Initializes a global variable <code>index_pos</code> to zero. This variable keeps track of the current position in the input string as parsing progresses.<br>
+            <b>Why?</b> By resetting <code>index_pos</code> to 0, the parsing process always starts at the beginning of the given formula, ensuring correctness regardless of prior parsing operations.
+          </li>
+          <li>
+            <code>return parseExpression(infixFormula);</code><br>
+            Calls the <code>parseExpression</code> function, passing the infix formula string. This function recursively parses the formula and builds the corresponding tree, returning a pointer to the root node.<br>
+            The returned pointer represents the top node of the constructed parse tree.
+          </li>
+        </ul>
+
+        <h2>Key Concepts:</h2>
+        <ul>
+          <li>
+            <b>Recursion and Tree Construction:</b> The function relies on <code>parseExpression</code> to interpret the formula and recursively build the parse tree structure.
+          </li>
+          <li>
+            <b>Memory Allocation:</b> Each node of the tree is dynamically allocated (often via <code>malloc</code> in <code>createNode</code>). The returned pointer provides access to the root of the entire tree, which will include all parsed operators and operands.
+          </li>
+          <li>
+            <b>Global State:</b> <code>index_pos</code> is a global variable updated by parsing routines to track progress in the formula. Resetting it prevents accidental re-use of a previous value from another parsing session.
+          </li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>Node* root = buildParseTree("(A+B)*(C~D)");
+</code></pre>
+        <p>
+          This line constructs a parse tree for the formula <code>(A+B)*(C~D)</code> and stores a pointer to the root node in <code>root</code>.
+        </p>
+    </div>
+</body>
+</html>

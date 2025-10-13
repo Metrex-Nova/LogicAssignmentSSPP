@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>createNode Function Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Explanation: <code>createNode</code> Function</h1>
+
+            <pre><code>Node* createNode(char value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->value = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}</code></pre>
+
+            <ul>
+                <li>
+                    <code>Node* createNode(char value)</code>:
+                    Declares a function named <code>createNode</code> that takes a character (<code>value</code>) and returns a pointer to a <code>Node</code>.
+                </li>
+                <li>
+                    <code>Node* newNode = (Node*)malloc(sizeof(Node));</code>:
+                    Dynamically allocates memory for a new <code>Node</code> struct using <code>malloc</code>. The result of <code>malloc</code> is cast to the type <code>Node*</code>.
+                    This allocation is done on the heap, so the node can persist after the function returns.
+                </li>
+                <li>
+                    <code>newNode->value = value;</code>:
+                    Assigns the input character value to the <code>value</code> field of the new node.
+                </li>
+                <li>
+                    <code>newNode->left = NULL;</code>:
+                    Sets the <code>left</code> pointer of the node to <code>NULL</code>, indicating it does not yet have a left child.
+                </li>
+                <li>
+                    <code>newNode->right = NULL;</code>:
+                    Sets the <code>right</code> pointer of the node to <code>NULL</code>, meaning it does not yet have a right child.
+                </li>
+                <li>
+                    <code>return newNode;</code>:
+                    Returns the pointer to the newly created node, allowing other parts of the program to use it.
+                </li>
+            </ul>
+
+            <h2>Memory Allocation Notes</h2>
+            <ul>
+                <li>
+                    <code>malloc(sizeof(Node))</code> allocates enough space in memory for one <code>Node</code>. This is done at runtime, not compile time, providing flexibility for dynamic data structures like trees and linked lists.
+                </li>
+                <li>
+                    Always check if <code>malloc</code> returns <code>NULL</code> before using the pointer, to avoid crashes if memory allocation fails:
+                    <pre><code>if (newNode == NULL) {
+    // handle error
+}</code></pre>
+                </li>
+                <li>
+                    Remember to <code>free()</code> each allocated <code>Node</code> when it's no longer needed, preventing memory leaks.
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

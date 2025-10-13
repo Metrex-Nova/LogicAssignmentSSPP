@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>C Programming Extensive Lesson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="chapter-content">
+    <h1>Structures in c</h1>
+    <p>
+        This lesson covers essential C programming concepts relevant to our codebase: <b>struct</b>, <b>structure</b>,
+        <b>pointer</b>, <b>alias</b> (typedef), and <b>variable types</b>, with clear examples. At the end, it breaks
+        down our actual code structures, and lists related concepts that we should know.
+    </p>
+
+    <h2>1. <code>struct</code> in C</h2>
+    <p>
+        A <b>struct</b> lets you group related variables (possibly of different types) under one name, as a new
+        composite type. Think of it like a record or a simple object.
+    </p>
+    <pre><code>// Define a struct for a student
+struct Student {
+    char name;
+    int age;
+    float grade;
+};</code></pre>
+    <p>
+        <b>Declaring and using:</b>
+    </p>
+    <pre><code>struct Student s1;
+s1.age = 20;
+s1.grade = 8.9;</code></pre>
+
+    <h2>2. <b>Structure</b> vs <code>struct</code></h2>
+    <p>
+        The term <b>structure</b> is the abstract concept, and <code>struct</code> is the concrete C keyword for
+        defining one. Whenever you use a type defined by struct, you are creating a structure.
+    </p>
+    <pre><code>// Struct type definition (template)
+struct Point { int x, y; };
+
+// Creating an instance (structure)
+struct Point p1 = {0, 1};</code></pre>
+
+    
+
+    
+ 
+
+    <hr>
+
+    <h2>7. Explanation of Provided Code</h2>
+    <pre><code>// Parse tree node for propositional logic
+typedef struct Node {
+    char value;           // e.g., 'A', 'v', '&', '¬'
+    struct Node* left;    // left subtree
+    struct Node* right;   // right subtree
+} Node;
+
+// Truth assignment for a propositional variable
+typedef struct {
+    char variable;        // e.g., 'P'
+    int value;            // 0 (false) or 1 (true)
+} TruthAssignment;
+
+// DIMACS clause: list of literals (variables or negated variables)
+typedef struct {
+    int* literals;        // e.g., {1, -2, 3}
+    int size;             // number of literals in clause
+} Clause;
+
+// DIMACS CNF formula: set of clauses
+typedef struct {
+    Clause* clauses;      // Array of Clause structs
+    int numClauses;       // How many clauses
+    int numVars;          // How many variables
+} DIMACSFormula;
+
+// Mapping from char variable to DIMACS int variable
+typedef struct {
+    char charVar;         // e.g., 'A'
+    int intVar;           // e.g., 1
+} VarMapping;</code></pre>
+    <ul>
+        <li>
+            <b>Node:</b> Used for building a binary parse tree: every logic operator or variable is a node; left/right
+            point to sub-nodes.
+        </li>
+        <li>
+            <b>TruthAssignment:</b> Associates a variable name (e.g., 'P') with a truth value (0 for false, 1 for true).
+        </li>
+        <li>
+            <b>Clause:</b> Represents a single clause for SAT/CNF, i.e., a disjunction of literals (variables that can
+            be positive or negative). Stored as an array of <b>int</b> where sign marks negation.
+        </li>
+        <li>
+            <b>DIMACSFormula:</b> Represents the whole logic formula in CNF: an array of Clauses, and metadata about
+            clause and variable counts.
+        </li>
+        <li>
+            <b>VarMapping:</b> Association table for mapping between character variable names (<b>charVar</b>, like 'P')
+            and integer equivalents required by SAT solvers (<b>intVar</b>).
+        </li>
+    </ul>
+
+    
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluate Truth Value</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: Evaluating the Truth Value of a Formula</h1>
+
+        <pre><code>int getTruthValue(char variable, TruthAssignment* assignments, int numAssignments) {
+    for (int i = 0; i < numAssignments; i++) {
+        if (assignments[i].variable == variable) {
+            return assignments[i].value;
+        }
+    }
+    return -1;
+}
+
+int evaluateFormula(Node* root, TruthAssignment* assignments, int numAssignments) {
+    if (root == NULL) {
+        return -1;
+    }
+    
+    if (!isOperator(root->value)) {
+        return getTruthValue(root->value, assignments, numAssignments);
+    }
+    
+    int leftVal = evaluateFormula(root->left, assignments, numAssignments);
+    int rightVal = (root->right != NULL) ? evaluateFormula(root->right, assignments, numAssignments) : 0;
+    
+    switch (root->value) {
+        case '~':
+            return !leftVal;
+        case '+':
+            return leftVal || rightVal;
+        case '*':
+            return leftVal && rightVal;
+        case '>':
+            return !leftVal || rightVal;
+        default:
+            return -1;
+    }
+}
+</code></pre>
+
+        <h2>Function: <code>getTruthValue</code></h2>
+        <ul>
+          <li>Takes a propositional variable character, an array of <code>TruthAssignment</code>, and the number of assignments.</li>
+          <li>Iterates through the assignments to locate the variable.</li>
+          <li>If found, returns its truth value (<code>0</code> for false, <code>1</code> for true).</li>
+          <li>If not found, returns <code>-1</code> indicating no assignment exists.</li>
+        </ul>
+
+        <h2>Function: <code>evaluateFormula</code></h2>
+        <ul>
+          <li>Recursively evaluates the truth value of the formula represented by the parse tree rooted at <code>root</code>.</li>
+          <li>Base case: If <code>root</code> is NULL, returns <code>-1</code> (error/undefined).</li>
+          <li>If <code>root->value</code> is not an operator, calls <code>getTruthValue</code> to obtain the variable's assigned value.</li>
+          <li>Recursively evaluates the left child (<code>leftVal</code>).</li>
+          <li>Evaluates the right child only if it exists, otherwise uses 0 (false) for unary operators like NOT (~).</li>
+          <li>Switches on the operator character at root:
+            <ul>
+              <li><code>~</code>: returns logical NOT of <code>leftVal</code>.</li>
+              <li><code>+</code>: returns logical OR of <code>leftVal</code> and <code>rightVal</code>.</li>
+              <li><code>*</code>: returns logical AND of <code>leftVal</code> and <code>rightVal</code>.</li>
+              <li><code>></code>: returns logical IMPLICATION (<code>!leftVal || rightVal</code>).</li>
+              <li>Default: returns <code>-1</code> for unknown operators.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h2>Key Points</h2>
+        <ul>
+          <li>This is a recursive tree evaluation method common in logical and expression parsing.</li>
+          <li>Assignment array must include all variables used; otherwise, evaluation returns <code>-1</code> for unknown variables.</li>
+          <li>Logical operators follow standard boolean logic rules with <code>0</code> as false and <code>1</code> as true.</li>
+          <li>Unary <code>~</code> operator affects only the left subtree, while binary operators process both left and right subtrees.</li>
+          <li>Proper error handling (return <code>-1</code>) helps detect incomplete or malformed inputs.</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>TruthAssignment assignments[] = {
+    {'A', 1},
+    {'B', 0},
+    {'C', 1}
+};
+int numAssignments = 3;
+int result = evaluateFormula(root, assignments, numAssignments);
+printf("Result: %d\n", result);  // Outputs 0 or 1 depending on the formula</code></pre>
+    </div>
+</body>
+</html>

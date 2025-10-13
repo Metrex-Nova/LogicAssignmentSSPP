@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NNF Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="chapter-content">
+<h1>Explanation: <code>moveNegationsInward</code> Function</h1>
+
+<pre><code>Node* moveNegationsInward(Node* root) {
+    if (root == NULL) return NULL;
+    
+    if (root->value != '~') {
+        root->left = moveNegationsInward(root->left);
+        root->right = moveNegationsInward(root->right);
+        return root;
+    }
+    
+    if (root->left != NULL && root->left->value == '~') {
+        Node* temp = root->left->left;
+        free(root->left);
+        free(root);
+        return moveNegationsInward(temp);
+    }
+    
+    if (root->left != NULL && root->left->value == '*') {
+        Node* andNode = root->left;
+        
+        Node* notLeft = createNode('~');
+        notLeft->left = andNode->left;
+        
+        Node* notRight = createNode('~');
+        notRight->left = andNode->right;
+        
+        Node* orNode = createNode('+');
+        orNode->left = moveNegationsInward(notLeft);
+        orNode->right = moveNegationsInward(notRight);
+        
+        free(andNode);
+        free(root);
+        return orNode;
+    }
+    
+    if (root->left != NULL && root->left->value == '+') {
+        Node* orNode = root->left;
+        
+        Node* notLeft = createNode('~');
+        notLeft->left = orNode->left;
+        
+        Node* notRight = createNode('~');
+        notRight->left = orNode->right;
+        
+        Node* andNode = createNode('*');
+        andNode->left = moveNegationsInward(notLeft);
+        andNode->right = moveNegationsInward(notRight);
+        
+        free(orNode);
+        free(root);
+        return andNode;
+    }
+    
+    return root;
+}
+</code></pre>
+
+<ul>
+  <li>
+    <b>Function Purpose:</b><br>
+    Recursively moves all negations (<code>~</code>) inward in a logical parse tree, applying De Morgan's laws and eliminating double negations. This is a key step in converting formulas to Negation Normal Form (NNF).
+  </li>
+</ul>
+
+<h2>Line-by-Line Explanation</h2>
+<ul>
+  <li>
+    <code>if (root == NULL) return NULL;</code><br>
+    Base case: If the node is <code>NULL</code>, return <code>NULL</code>.
+  </li>
+  <li>
+    <code>if (root->value != '~') { ... }</code><br>
+    If the current node is not a negation, recursively process its left and right children and return the node.
+  </li>
+  <li>
+    <code>if (root->left != NULL && root->left->value == '~') { ... }</code><br>
+    Handles double negation: <code>~~A</code> becomes <code>A</code>.  
+    Frees both negation nodes and recursively processes the inner subtree.
+  </li>
+  <li>
+    <code>if (root->left != NULL && root->left->value == '*') { ... }</code><br>
+    Applies De Morgan's law: <code>~(A * B)</code> becomes <code>~A + ~B</code>.
+    <ul>
+      <li>Creates new negation nodes for both children of the AND node.</li>
+      <li>Creates a new OR node with these negations as children.</li>
+      <li>Recursively processes the new subtrees, frees the old nodes, and returns the new OR node.</li>
+    </ul>
+  </li>
+  <li>
+    <code>if (root->left != NULL && root->left->value == '+') { ... }</code><br>
+    Applies De Morgan's law: <code>~(A + B)</code> becomes <code>~A * ~B</code>.
+    <ul>
+      <li>Creates new negation nodes for both children of the OR node.</li>
+      <li>Creates a new AND node with these negations as children.</li>
+      <li>Recursively processes the new subtrees, frees the old nodes, and returns the new AND node.</li>
+    </ul>
+  </li>
+  <li>
+    <code>return root;</code><br>
+    If none of the above cases apply, returns the current node (which is a negation applied directly to a variable or atomic formula).
+  </li>
+</ul>
+
+<h2>Key Concepts</h2>
+<ul>
+  <li><b>Negation Normal Form (NNF):</b> All negations are pushed inward so they only apply to variables, not to compound expressions.</li>
+  <li><b>De Morgan's Laws:</b> Used to distribute negations over AND/OR:
+    <ul>
+      <li><code>~(A * B) ≡ ~A + ~B</code></li>
+      <li><code>~(A + B) ≡ ~A * ~B</code></li>
+    </ul>
+  </li>
+  <li><b>Double Negation:</b> <code>~~A ≡ A</code> is simplified by removing both negations.</li>
+  <li><b>Memory Management:</b> Old nodes are freed after transformation to prevent memory leaks.</li>
+  <li><b>Recursion:</b> Ensures the entire tree is processed, bottom-up.</li>
+</ul>
+
+<h2>Example Usage</h2>
+<pre><code>// For formula: ~(A * B)
+// After moveNegationsInward, tree represents: ~A + ~B
+Node* root = buildParseTree("~(A*B)");
+root = moveNegationsInward(root);
+</code></pre>
+</div>
+</body>
+</html>

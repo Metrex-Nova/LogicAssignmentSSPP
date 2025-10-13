@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Arrow Operator in C</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="chapter-content">
+    <h1>Chapter: The <code>-></code> Operator in C</h1>
+
+    <p>
+        The <code>-></code> operator is used in C for accessing structure members through a pointer to a struct. It provides a convenient way to refer to the fields of a structure without explicit dereferencing.
+    </p>
+
+    <h2>1. What does <code>-></code> do?</h2>
+    <p>
+        If you have a pointer to a struct (for example, <code>ptr</code>) and you want to access a member (such as <code>age</code>), you use:
+    </p>
+    <pre><code>ptr->age
+    </code></pre>
+    <p>
+        This is equivalent to:
+    </p>
+    <pre><code>(*ptr).age
+    </code></pre>
+    <p>
+        Parentheses are required because the dot operator (<code>.</code>) has higher precedence than the asterisk (<code>*</code>).
+    </p>
+
+    <h2>2. Why use <code>-></code>?</h2>
+    <p>
+        The <code>-></code> operator is more concise and readable than <code>(*ptr).member</code>.
+    </p>
+
+    <h2>3. Example</h2>
+    <pre><code>struct Person {
+        int age;
+        char name[20];
+    };
+
+    struct Person p1 = {30, "Alice"};
+    struct Person *ptr = &p1;
+
+    // Accessing age using pointer
+    ptr->age = 21;  // Sets the 'age' field of p1 to 21
+
+    printf("Age: %d\n", ptr->age);  // Prints 21
+    </code></pre>
+
+    <h2>4. Summary Table</h2>
+    <table>
+        <tr>
+            <th>Expression</th>
+            <th>Meaning</th>
+        </tr>
+        <tr>
+            <td><code>ptr->age</code></td>
+            <td>Access <code>age</code> member via pointer</td>
+        </tr>
+        <tr>
+            <td><code>(*ptr).age</code></td>
+            <td>Dereference pointer, then access member</td>
+        </tr>
+    </table>
+
+    <p>
+        Use <code>-></code> whenever you have a pointer to a struct and want to access its members.
+    </p>
+    </div>
+</body>
+
+</html>

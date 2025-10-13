@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding typedef struct Node</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+  <div class="chapter-content">
+
+    <h1>Understanding <code>typedef struct Node { ... } Node;</code></h1>
+    <pre><code>// Parse tree node for propositional logic
+typedef struct Node {
+    char value;           // e.g., 'A', 'v', '&', '¬'
+    struct Node* left;    // left subtree
+    struct Node* right;   // right subtree
+} Node;</code></pre>
+    <h2>1. What this line does</h2>
+    <p>This single line performs two tasks:</p>
+    <ul>
+      <li>Defines a new struct type named <code>struct Node</code>.</li>
+      <li>Creates an alias <code>Node</code> so you can use <code>Node</code> directly instead of writing
+        <code>struct Node</code> every time.</li>
+    </ul>
+    <p>For example, these declarations are equivalent:</p>
+    <pre><code>struct Node n1;
+Node n1;</code></pre>
+
+    <h2>2. Inside the <code>Node</code> structure</h2>
+    <ul>
+      <li><code>char value;</code><br>Stores a single character such as 'A', 'v', '&amp;', or '¬'. This represents the
+        data held by the node.</li>
+      <li><code>struct Node* left;</code><br>
+        A pointer to another <code>Node</code> struct. It represents the left child in a binary tree.</li>
+      <li><code>struct Node* right;</code><br>
+        A pointer to another <code>Node</code> struct. It represents the right child in a binary tree.</li>
+    </ul>
+
+    <h2>3. Meaning of the pointers</h2>
+    <p>
+      These pointers are memory addresses indicating where the left and right child nodes are stored in memory. They are
+      not hexadecimal values themselves; rather, they hold the location of other nodes.
+    </p>
+    <p>
+      For example:
+    </p>
+    <pre><code>Node* left;</code></pre>
+    <p>means <b>“left”</b> is a pointer to a <code>Node</code> and can store the memory address of another node.</p>
+
+    <h2>4. Putting it all together</h2>
+    <p>This struct defines a binary tree node (or syntax tree node). Each node contains:</p>
+    <ul>
+      <li>A character <code>value</code> (like 'A' or '&amp;').</li>
+      <li>A pointer to its <b>left child</b> node.</li>
+      <li>A pointer to its <b>right child</b> node.</li>
+    </ul>
+
+    <h3>Example Visualization</h3>
+    <p>Imagine this tree:</p>
+    <pre><code>     &
+    / \
+   A   B
+</code></pre>
+    <p>In memory, it would look like:</p>
+    <pre><code>Node A = {'A', NULL, NULL};
+Node B = {'B', NULL, NULL};
+Node root = {'&', &A, &B};</code></pre>
+
+    <p>Summary:</p>
+    <ul>
+      <li>The last two fields (<code>left</code> and <code>right</code>) are pointers to other nodes — <b>memory
+          addresses</b>, not just hexadecimal values.</li>
+      <li><code>Node</code> is an alias for <code>struct Node</code>, allowing simpler syntax.</li>
+    </ul>
+  </div>
+</body>
+
+</html>

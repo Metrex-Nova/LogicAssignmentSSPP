@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Tree Function Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>cloneTree</code> Function</h1>
+
+        <pre><code>Node* cloneTree(Node* root) {
+    if (root == NULL) return NULL;
+
+    Node* newNode = createNode(root->value);
+    newNode->left = cloneTree(root->left);
+    newNode->right = cloneTree(root->right);
+
+    return newNode;
+}
+</code></pre>
+
+        <ul>
+          <li><b>Function Purpose:</b><br>
+            Creates a deep copy (clone) of a binary parse tree rooted at <code>root</code>.
+            Every node and its subtrees are duplicated into newly allocated memory.</li>
+
+          <li><b>Line-by-line:</b>
+            <ul>
+              <li><code>if (root == NULL) return NULL;</code><br>
+              Base case: If the input tree/subtree is empty <code>(NULL)</code>, returns <code>NULL</code> to represent an empty subtree.</li>
+
+              <li><code>Node* newNode = createNode(root->value);</code><br>
+              Creates a new node with the same value as the current <code>root</code> node using <code>createNode</code>, which allocates new memory.</li>
+
+              <li><code>newNode->left = cloneTree(root->left);</code><br>
+              Recursively clones the left subtree and assigns it to the new node’s left child.</li>
+
+              <li><code>newNode->right = cloneTree(root->right);</code><br>
+              Recursively clones the right subtree and assigns it to the new node’s right child.</li>
+
+              <li><code>return newNode;</code><br>
+              Returns the pointer to the root of the cloned subtree/tree.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h2>Key Concepts</h2>
+        <ul>
+          <li><b>Deep Copy:</b> This function duplicates every node rather than just copying pointers, so the new tree is independent of the original.</li>
+          <li><b>Recursion:</b> The function recursively traverses and clones the entire tree structure.</li>
+          <li><b>Memory Allocation:</b> Each new node uses dynamic memory allocation to avoid sharing memory with the original tree nodes.</li>
+          <li><b>Use Case:</b> Useful when modifications to a tree should not affect the original, such as in simulations, undo mechanisms, or tree transformations.</li>
+        </ul>
+    </div>
+</body>
+</html>

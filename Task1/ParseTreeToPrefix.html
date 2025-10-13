@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse Tree to Prefix</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>treeToPrefix</code> Function</h1>
+
+        <pre><code>void treeToPrefix(Node* root, char* result, int* resultIndex) {
+    if (root == NULL) {
+        return;
+    }
+    
+    result[(*resultIndex)++] = root->value;
+    result[(*resultIndex)++] = ' ';
+    
+    treeToPrefix(root->left, result, resultIndex);
+    treeToPrefix(root->right, result, resultIndex);
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            Converts a parse tree (represented using <code>Node</code> structures) into prefix notation (also known as Polish notation).  
+            In prefix form, each operator appears before its operands.  
+            For example: Infix expression <code>(A+B)*C</code> becomes prefix <code>* + A B C</code>.
+          </li>
+        </ul>
+
+        <h2>Line-by-Line Explanation</h2>
+        <ul>
+          <li>
+            <code>void treeToPrefix(Node* root, char* result, int* resultIndex)</code>:  
+            Declares a function that takes:
+            <ul>
+              <li><code>root</code>: a pointer to the current node in the parse tree.</li>
+              <li><code>result</code>: a character array to store the resulting prefix expression.</li>
+              <li><code>resultIndex</code>: a pointer to an integer tracking the current writing position in <code>result</code> (used for recursion).</li>
+            </ul>
+            The function returns nothing (<code>void</code>), as the prefix expression is built directly in <code>result</code>.
+          </li>
+
+          <li>
+            <code>if (root == NULL) { return; }</code><br>
+            Base case of the recursion. If the current node is <code>NULL</code>, the function simply returns, as there’s nothing to process.  
+            This condition ensures recursion stops at leaf nodes.
+          </li>
+
+          <li>
+            <code>result[(*resultIndex)++] = root->value;</code><br>
+            Stores the <code>value</code> of the current node (operator or operand) in the <code>result</code> array at the current index.  
+            <code>(*resultIndex)++</code> increases the index after insertion, so the next character goes to the next slot.
+          </li>
+
+          <li>
+            <code>result[(*resultIndex)++] = ' ';</code><br>
+            Adds a space after each symbol to make the prefix string human-readable (separating tokens like “A” and “B”).
+          </li>
+
+          <li>
+            <code>treeToPrefix(root->left, result, resultIndex);</code><br>
+            Recursively processes the left subtree, converting it to prefix order.  
+            This follows prefix traversal logic: visit root → then left subtree → then right subtree.
+          </li>
+
+          <li>
+            <code>treeToPrefix(root->right, result, resultIndex);</code><br>
+            Recursively processes the right subtree and appends its prefix form to the result.
+          </li>
+        </ul>
+
+        <h2>Memory and Function Behavior</h2>
+        <ul>
+          <li><b>Recursion:</b> Each recursive call saves local variables on the call stack. Memory from previous levels remains until recursion unwinds.</li>
+          <li><b>Heap Allocation:</b> The tree’s nodes (created earlier with <code>malloc</code>) are traversed but not modified or freed — only read for their <code>value</code>.</li>
+          <li><b>Result Array:</b> Memory for <code>result</code> should be preallocated before calling this function (e.g., <code>char result[100];</code>).</li>
+          <li><b>Index Tracking:</b> <code>resultIndex</code> ensures that recursive calls write into correct positions of the same output buffer without overwriting previous data.</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>char result[100];
+int pos = 0;
+
+Node* root = buildParseTree("(A+B)*C");
+treeToPrefix(root, result, &pos);
+result[pos] = '\0'; // Null-terminate the string
+
+printf("Prefix Expression: %s\n", result);
+</code></pre>
+        <p><b>Output:</b> <code>* + A B C</code></p>
+
+        <h2>Summary</h2>
+        <ul>
+          <li>This function performs a preorder traversal of the parse tree.</li>
+          <li>It directly builds a readable prefix expression in <code>result</code>.</li>
+          <li>It uses recursion and pointer arithmetic to manage character insertion efficiently.</li>
+        </ul>
+    </div>
+</body>
+</html>

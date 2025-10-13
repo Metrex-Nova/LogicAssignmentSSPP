@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Parse Tree from Prefix</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>infixToPrefix</code> Function</h1>
+
+        <pre><code>void infixToPrefix(char* infixFormula, char* prefixResult) {
+    Node* root = buildParseTree(infixFormula);
+    
+    int resultIndex = 0;
+    treeToPrefix(root, prefixResult, &resultIndex);
+    
+    if (resultIndex > 0 && prefixResult[resultIndex - 1] == ' ') {
+        resultIndex--;
+    }
+    prefixResult[resultIndex] = '\0';
+    
+    freeTree(root);
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            Converts a logical expression from infix notation (standard operator placement) to prefix notation.  
+            Stores the result as a string in <code>prefixResult</code>.
+          </li>
+        </ul>
+
+        <h2>Line-by-Line Explanation</h2>
+        <ul>
+          <li>
+            <code>Node* root = buildParseTree(infixFormula);</code><br>
+            Builds a parse (syntax) tree from the given infix formula string by calling <code>buildParseTree</code>.  
+            <b>root</b> points to the root node of this tree.  
+            Memory for the tree nodes is dynamically allocated (on the heap).
+          </li>
+          <li>
+            <code>int resultIndex = 0;</code><br>
+            Initializes a variable to track the position for inserting the next character in <code>prefixResult</code>.
+          </li>
+          <li>
+            <code>treeToPrefix(root, prefixResult, &resultIndex);</code><br>
+            Converts the parse tree to prefix notation (preorder traversal), writing output into <code>prefixResult</code>.  
+            <code>resultIndex</code> is updated as characters are added.
+          </li>
+          <li>
+            <code>if (resultIndex > 0 && prefixResult[resultIndex - 1] == ' ') { resultIndex--; }</code><br>
+            Checks if the last character in <code>prefixResult</code> is a space. If so, decrements <code>resultIndex</code> to remove the trailing space.  
+            Ensures the result string does not end with an unnecessary space.
+          </li>
+          <li>
+            <code>prefixResult[resultIndex] = '\0';</code><br>
+            Adds the null-terminator to mark the end of the resulting string (required for valid C strings).
+          </li>
+          <li>
+            <code>freeTree(root);</code><br>
+            Frees all memory allocated for the parse tree nodes, preventing memory leaks.
+          </li>
+        </ul>
+
+        <h2>Key Concepts:</h2>
+        <ul>
+          <li>
+            <b>Parse Trees:</b> Used to express the hierarchical structure of logical expressions, making recursion and operator precedence handling easier.
+          </li>
+          <li>
+            <b>Prefix Notation:</b> Places the operator before its operands (e.g., <code>+ A B</code> for <code>A+B</code>).
+          </li>
+          <li>
+            <b>Memory Management:</b> All nodes for the tree are dynamically allocated and then freed after use to manage resources efficiently.
+          </li>
+          <li>
+            <b>String Handling:</b> The function carefully builds the output string and ensures proper null-termination for correctness.
+          </li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>char prefix[100];
+infixToPrefix("(A+B)*C", prefix);
+printf("Prefix: %s\n", prefix);
+// Output: * + A B C
+</code></pre>
+    </div>
+</body>
+</html>

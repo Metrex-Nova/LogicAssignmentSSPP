@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminate Implications Function Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>eliminateImplications</code> Function</h1>
+
+        <pre><code>Node* eliminateImplications(Node* root) {
+    if (root == NULL) return NULL;
+
+    root->left = eliminateImplications(root->left);
+    root->right = eliminateImplications(root->right);
+
+    if (root->value == '>') {
+        Node* notNode = createNode('~');
+        notNode->left = root->left;
+
+        Node* orNode = createNode('+');
+        orNode->left = notNode;
+        orNode->right = root->right;
+
+        free(root);
+        return orNode;
+    }
+
+    return root;
+}
+</code></pre>
+
+        <ul>
+          <li><b>Function Purpose:</b><br>
+            Recursively traverses a parse tree and eliminates implication operators (<code>'>'</code>) by rewriting them using logical equivalence:
+            <code>(A → B) ≡ (¬A ∨ B)</code>.
+            Returns the modified tree with no implication operators.
+          </li>
+        </ul>
+
+        <h2>Line-by-Line Explanation</h2>
+        <ul>
+          <li><code>if (root == NULL) return NULL;</code><br>
+            Base case: If the current node is <code>NULL</code>, return <code>NULL</code> (empty subtree).</li>
+
+          <li><code>root->left = eliminateImplications(root->left);</code><br>
+            Recursively process and transform the left subtree.</li>
+
+          <li><code>root->right = eliminateImplications(root->right);</code><br>
+            Recursively process and transform the right subtree.</li>
+
+          <li><code>if (root->value == '>') { ... }</code><br>
+            If the current node is an implication operator:
+            <ul>
+              <li>Create a new <code>~</code> (NOT) node named <code>notNode</code>.</li>
+              <li>Set <code>notNode->left</code> to point to the left child of the current implication node (representing A in A → B).</li>
+              <li>Create a new <code>+</code> (OR) node named <code>orNode</code>.</li>
+              <li>Set <code>orNode->left</code> to <code>notNode</code> (¬A).</li>
+              <li>Set <code>orNode->right</code> to <code>root->right</code> (representing B).</li>
+              <li>Free the original implication node to avoid memory leaks.</li>
+              <li>Return the new <code>orNode</code> which replaces the implication node in the tree.</li>
+            </ul>
+          </li>
+
+          <li><code>return root;</code><br>
+            If the node is not an implication, return it unchanged (after its subtrees are processed).</li>
+        </ul>
+
+        <h2>Key Concepts</h2>
+        <ul>
+          <li><b>Logical equivalence:</b> Implications are rewritten as <code>¬A ∨ B</code> to simplify or normalize formulas.</li>
+          <li><b>Tree transformation:</b> The function modifies the tree structure dynamically, creating new nodes and deleting old ones.</li>
+          <li><b>Memory management:</b> Old nodes are <code>free</code>d after replacement to prevent leaks.</li>
+          <li><b>Recursion:</b> The entire tree is processed bottom-up, ensuring all implications get converted.</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>Node* root = buildParseTree("(A>B)+C");
+root = eliminateImplications(root);
+// Now tree uses only ~ and + instead of >
+</code></pre>
+    </div>
+</body>
+</html>

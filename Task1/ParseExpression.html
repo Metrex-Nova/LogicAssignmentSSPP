@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Explanation: parseExpression Function</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Detailed Explanation: <code>parseExpression</code> Function</h1>
+
+        <pre><code>Node* parseExpression(char* formula) {
+    if (index_pos < strlen(formula) && formula[index_pos] == '(') {
+        index_pos++;
+    }
+    
+    if (index_pos < strlen(formula) && formula[index_pos] == '~') {
+        index_pos++;
+        Node* operatorNode = createNode('~');
+        operatorNode->left = parseExpression(formula);
+        
+        if (index_pos < strlen(formula) && formula[index_pos] == ')') {
+            index_pos++;
+        }
+        
+        return operatorNode;
+    }
+    
+    Node* left = parseOperand(formula);
+    
+    if (index_pos < strlen(formula) && isBinaryOperator(formula[index_pos])) {
+        char operator = formula[index_pos];
+        index_pos++;
+        
+        Node* right = parseOperand(formula);
+        
+        Node* operatorNode = createNode(operator);
+        operatorNode->left = left;
+        operatorNode->right = right;
+        
+        if (index_pos < strlen(formula) && formula[index_pos] == ')') {
+            index_pos++;
+        }
+        
+        return operatorNode;
+    }
+    
+    if (index_pos < strlen(formula) && formula[index_pos] == ')') {
+        index_pos++;
+    }
+    
+    return left;
+}
+</code></pre>
+
+        <ul>
+          <li><b>Function Purpose:</b> Recursively parses a logical expression (in infix notation) and builds a binary tree (parse tree) representing the structure of the formula.</li>
+        </ul>
+
+        <h2>Line-by-Line Explanation</h2>
+        <ul>
+          <li><code>if (index_pos < strlen(formula) && formula[index_pos] == '(') { index_pos++; }</code><br>
+            If the current character is an opening parenthesis, skip it by advancing <code>index_pos</code>. This prepares for parsing the subexpression inside the parentheses.
+          </li>
+          <li><code>if (index_pos < strlen(formula) && formula[index_pos] == '~') { ... }</code><br>
+            If the current character is a NOT operator (<code>'~'</code>):
+            <ul>
+              <li>Advance <code>index_pos</code> to skip the '~'.</li>
+              <li>Create a new node for the '~' operator.</li>
+              <li>Recursively call <code>parseExpression</code> to parse the operand/subexpression to the right of '~', and set it as the left child of the '~' node.</li>
+              <li>If the next character is a closing parenthesis, skip it.</li>
+              <li>Return the '~' operator node.</li>
+            </ul>
+          </li>
+          <li><code>Node* left = parseOperand(formula);</code><br>
+            Parse the next operand (which could be a variable or a subexpression) and store its node in <code>left</code>.
+          </li>
+          <li><code>if (index_pos < strlen(formula) && isBinaryOperator(formula[index_pos])) { ... }</code><br>
+            If the next character is a binary operator (like '+', '*', '>'):
+            <ul>
+              <li>Store the operator character and advance <code>index_pos</code>.</li>
+              <li>Parse the right operand (could be a variable or subexpression).</li>
+              <li>Create a new node for the operator, set its left and right children.</li>
+              <li>If the next character is a closing parenthesis, skip it.</li>
+              <li>Return the operator node.</li>
+            </ul>
+          </li>
+          <li><code>if (index_pos < strlen(formula) && formula[index_pos] == ')') { index_pos++; }</code><br>
+            If the next character is a closing parenthesis, skip it. This ensures the parser moves past the end of the current subexpression.
+          </li>
+          <li><code>return left;</code><br>
+            If no binary operator is found, return the node parsed as <code>left</code> (could be a variable or a subexpression node).</li>
+        </ul>
+
+        <h2>Key Concepts</h2>
+        <ul>
+          <li><b>Recursion:</b> The function calls itself to handle nested subexpressions and unary operators.</li>
+          <li><b>Memory Allocation:</b> Each call to <code>createNode</code> allocates memory for a new node on the heap. Each node represents an operator or operand in the expression tree. All allocated nodes must be freed later to avoid memory leaks.</li>
+          <li><b>Global Index:</b> <code>index_pos</code> tracks the current position in the formula string, ensuring correct parsing order.</li>
+          <li><b>Operator Handling:</b> Handles both unary ('~') and binary ('+', '*', '>') operators, building the tree structure accordingly.</li>
+        </ul>
+
+        <h2>Example</h2>
+        <pre><code>// For formula: (A+B)
+// The tree will have '+' as the root, 'A' as left child, 'B' as right child.
+</code></pre>
+    </div>
+</body>
+</html>

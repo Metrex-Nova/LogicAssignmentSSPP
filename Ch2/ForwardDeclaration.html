@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward Declarations in C</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Explanation: Forward Declarations in C</h1>
+
+            <p>These lines are <b>function forward declarations</b>. They tell the compiler about the names, return types, and parameter types of functions that will be defined later in the code. This allows you to call these functions before their full definitions appear.</p>
+
+            <pre><code>Node* parseExpression(char* formula);
+Node* parseOperand(char* formula);
+void freeTree(Node* root);
+void extractLiterals(Node* clause, int* literals, int* litCount);
+</code></pre>
+
+            <ul>
+                <li><code>Node* parseExpression(char* formula);</code><br>
+                    Declares a function that takes a pointer to a character array (<code>char* formula</code>, representing a logical formula as a string) and returns a pointer to a <code>Node</code> (the root of a parse tree for the expression).
+                </li>
+                <li><code>Node* parseOperand(char* formula);</code><br>
+                    Declares a function that takes a formula string and returns a pointer to a <code>Node</code> representing a single operand (like a variable or a subexpression).
+                </li>
+                <li><code>void freeTree(Node* root);</code><br>
+                    Declares a function that takes a pointer to the root of a tree and frees all memory used by the tree (recursively deletes all nodes). Returns nothing (<code>void</code>).
+                </li>
+                <li><code>void extractLiterals(Node* clause, int* literals, int* litCount);</code><br>
+                    Declares a function that takes:
+                    <ul>
+                        <li><code>Node* clause</code>: pointer to a parse tree node representing a clause,</li>
+                        <li><code>int* literals</code>: pointer to an array where extracted literals will be stored,</li>
+                        <li><code>int* litCount</code>: pointer to an integer where the number of literals found will be stored.</li>
+                    </ul>
+                    The function extracts all literals from the clause and updates the array and count.
+                </li>
+            </ul>
+
+            <h2>Why Forward Declarations?</h2>
+            <ul>
+                <li>They allow you to call these functions earlier in your code, even if their full definitions appear later.</li>
+                <li>This is especially useful for organizing code in multiple files or when functions call each other in a circular way.</li>
+            </ul>
+
+            <h2>Example</h2>
+            <pre><code>// Forward declaration
+void greet();
+
+int main() {
+    greet(); // OK, because of the forward declaration
+    return 0;
+}
+
+void greet() {
+    printf("Hello!\n");
+}
+</code></pre>
+        </div>
+    </div>
+</body>
+
+</html>

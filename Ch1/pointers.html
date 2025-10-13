@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pointers</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h2>1. Pointers</h2>
+        <p>
+            Pointers store addresses of variables, so you can work with the memory location directly.
+        </p>
+        <h3>💡 Meaning of <code>int*</code> and <code>char*</code></h3>
+        <ul>
+            <li><b>int*</b>: Pointer to an <code>int</code> variable (stores the memory address of an <code>int</code>).
+            </li>
+            <li><b>char*</b>: Pointer to a <code>char</code> variable (stores the memory address of a <code>char</code>).
+            </li>
+        </ul>
+        <h4>🧠 Example:</h4>
+        <pre><code>int a = 10; int* p = &a;
+// a: integer variable storing 10
+// p: pointer to int, stores address of a
+// p → address of a
+// *p → value at that address (10)
+char c = 'A'; char *q = &c;
+// q: pointer to char, stores address of c
+// *q → value at that address ('A')
+        </code></pre>
+
+        <h4>🧩 Glossary</h4>
+        <table>
+            <tr>
+                <th>Term</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td><code>*</code> (asterisk)</td>
+                <td>Declares a pointer or dereferences it</td>
+            </tr>
+            <tr>
+                <td><code>&</code> (ampersand)</td>
+                <td>Gets the address of a variable</td>
+            </tr>
+            <tr>
+                <td>Pointer</td>
+                <td>Variable storing the address of another variable</td>
+            </tr>
+            <tr>
+                <td>Dereferencing</td>
+                <td>Accessing the value at the address a pointer holds</td>
+            </tr>
+        </table>
+        <pre><code>int a = 42;
+int* p = &a;   // 'p' points to 'a'
+
+// Access value via pointer
+printf("%d", *p); // 42
+        </code></pre>
+        <p>
+            <b>Pointers with structs:</b>
+        </p>
+        <pre><code>struct Student s;
+struct Student* ptr = &s;
+ptr->age = 21;  // Sets 'age' field using pointer
+        </code></pre>
+    </div>
+</body>
+</html>

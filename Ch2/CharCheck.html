@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isOperator and isBinaryOperator Functions</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h1>Explanation: <code>isOperator</code> Function</h1>
+
+            <pre><code>int isOperator(char c) {
+    return (c == '~' || c == '+' || c == '*' || c == '>');
+}
+</code></pre>
+
+            <ul>
+                <li><code>int isOperator(char c)</code>:<br>
+                    Declares a function named <code>isOperator</code> that takes a single character <code>c</code> as input and returns an <code>int</code> (integer). The return value is used as a boolean: <code>1</code> for true, <code>0</code> for false.
+                </li>
+                <li><code>return (c == '~' || c == '+' || c == '*' || c == '>');</code>:<br>
+                    This line checks if the input character <code>c</code> is one of the logical operator symbols:
+                    <ul>
+                        <li><code>'~'</code>: NOT operator</li>
+                        <li><code>'+'</code>: OR operator</li>
+                        <li><code>'*'</code>: AND operator</li>
+                        <li><code>'>'</code>: IMPLIES operator</li>
+                    </ul>
+                    The <code>||</code> operator means "or". If <code>c</code> matches any of these, the expression is true (<code>1</code>); otherwise, it is false (<code>0</code>).
+                </li>
+            </ul>
+
+            <h2>Example Usage</h2>
+            <pre><code>char ch = '+';
+if (isOperator(ch)) {
+    printf("%c is an operator.\n", ch);
+} else {
+    printf("%c is not an operator.\n", ch);
+}
+</code></pre>
+            <p>This will print: <code>+ is an operator.</code></p>
+
+            <h1>Explanation: <code>isBinaryOperator</code> Function and <code>index_pos</code> Variable</h1>
+
+            <h2>1. <code>isBinaryOperator</code> Function</h2>
+            <pre><code>int isBinaryOperator(char c) {
+    return (c == '+' || c == '*' || c == '>');
+}
+</code></pre>
+            <ul>
+                <li><code>int isBinaryOperator(char c)</code>:<br>
+                    Declares a function that takes a character <code>c</code> and returns an <code>int</code> (used as a boolean: <code>1</code> for true, <code>0</code> for false).</li>
+                <li><code>return (c == '+' || c == '*' || c == '>');</code>:<br>
+                    Checks if <code>c</code> is one of the binary logical operators:
+                    <ul>
+                        <li><code>'+'</code>: OR operator</li>
+                        <li><code>'*'</code>: AND operator</li>
+                        <li><code>'>'</code>: IMPLIES operator</li>
+                    </ul>
+                    If <code>c</code> matches any of these, the function returns <code>1</code> (true); otherwise, it returns <code>0</code> (false).</li>
+            </ul>
+
+            <h2>2. <code>index_pos</code> Global Variable</h2>
+            <pre><code>int index_pos = 0;
+</code></pre>
+            <ul>
+                <li>This declares a global integer variable named <code>index_pos</code> and initializes it to <code>0</code>.</li>
+                <li><b>Purpose:</b> <code>index_pos</code> is typically used as a position marker or index while parsing a string or an array. For example, when parsing a logical expression character by character, <code>index_pos</code> keeps track of the current position in the input.</li>
+                <li>Because it is global (declared outside any function), it can be accessed and modified by any function in the program, making it useful for recursive or multi-step parsing routines.</li>
+            </ul>
+
+            <h2>Example Usage</h2>
+            <pre><code>// Example: advancing index_pos while parsing
+char expr[] = "A+B*C";
+while (expr[index_pos] != '\0') {
+    char current = expr[index_pos];
+    if (isBinaryOperator(current)) {
+        printf("%c is a binary operator.\n", current);
+    }
+    index_pos++;
+}
+</code></pre>
+            <p>This loop checks each character in the expression and prints a message if it is a binary operator, using <code>index_pos</code> to track the current position.</p>
+        </div>
+    </div>
+</body>
+
+</html>

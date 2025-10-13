@@ -1,0 +1,48 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthAssignment and Clause Structures</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="chapter-content">
+            <h2>TruthAssignment Structure</h2>
+
+            <pre><code>typedef struct {
+    char variable;
+    int value; // 0 for false, 1 for true
+} TruthAssignment;</code></pre>
+
+            <ul>
+                <li><b>typedef struct { ... } TruthAssignment;</b>: Defines an anonymous struct and creates a type alias named <code>TruthAssignment</code>. You can declare variables of type <code>TruthAssignment</code> without writing <code>struct</code> every time.</li>
+                <li><code>char variable;</code>: A single character representing the propositional variable, for example, 'P' or 'Q'.</li>
+                <li><code>int value;</code>: An integer to hold the truth value of the variable. It uses <code>0</code> for false and <code>1</code> for true, representing boolean logic.</li>
+            </ul>
+
+            <h2>Clause Structure</h2>
+
+            <pre><code>typedef struct {
+    int* literals;  // Array of literals (positive or negative integers)
+    int size;       // Number of literals in clause
+} Clause;</code></pre>
+
+            <ul>
+                <li><b>typedef struct { ... } Clause;</b>: Defines an anonymous struct and creates a type alias named <code>Clause</code>.</li>
+                <li><code>int* literals;</code>: A pointer to an array of integers representing literals in a clause. Each literal is an integer where positive values represent the variable and negative values represent the negation of that variable.</li>
+                <li><code>int size;</code>: Stores the number of literals contained in the clause. This helps to know the length of the <code>literals</code> array.</li>
+            </ul>
+
+            <h2>Summary</h2>
+            <p>The <code>TruthAssignment</code> struct models the truth value assigned to a single propositional variable, and the <code>Clause</code> struct represents a single clause in CNF format as a collection of literals with its size.</p>
+        </div>
+    </div>
+</body>
+
+</html>
