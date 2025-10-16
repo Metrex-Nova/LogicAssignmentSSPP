@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <locale.h>
 
 // Node structure for parse tree
 typedef struct Node
@@ -34,7 +35,7 @@ typedef struct
     int numVars;
 } DIMACSFormula;
 
-// Variable mapping structure (char <-> int)
+// Variable mapping structure (char* <-> int)
 typedef struct
 {
     char charVar;
@@ -44,6 +45,8 @@ typedef struct
 // Global variable mapping
 VarMapping varMap[100];
 int varMapSize = 0;
+
+
 
 // Create a new node
 Node *createNode(char value)
@@ -808,6 +811,8 @@ void printVarMapping()
     }
 }
 
+
+
 // Free DIMACS formula
 void freeDIMACS(DIMACSFormula *formula)
 {
@@ -947,6 +952,9 @@ int main()
     Node *tree = NULL;
     DIMACSFormula *dimacsFormula = NULL;
 
+    // Set locale for wide character support
+    setlocale(LC_ALL, "");
+
     printf("=============================================\n");
     printf("  Propositional Logic Parser with DIMACS\n");
     printf("=============================================\n");
@@ -970,6 +978,8 @@ int main()
         printf("13. Show Variable Mapping\n");
         printf("14. Run Demo\n");
         printf("15. Display Parse Tree from Infix\n");
+        printf("16. Assign Names to DIMACS Variables (Auto)\n");
+        printf("17. Print Truth Table for Infix Formula\n");
         printf("0.  Exit\n");
         printf("Choice: ");
         scanf("%d", &choice);
@@ -1091,8 +1101,39 @@ int main()
             else
             {
                 Node *cnfTree = convertToCNF(cloneTree(tree));
-                bool valid = isValidCNF(cnfTree);
-                printf("Formula is %s\n", valid ? "VALID" : "NOT VALID (or cannot determine)");
+                Node *clauses[100];
+                int clauseCount = 0;
+                extractClauses(cnfTree, clauses, &clauseCount, 100);
+                bool overallValid = true;
+                for (int i = 0; i < clauseCount; i++)
+                {
+                    printf("Clause %d: ", i + 1);
+                    inorderTraversal(clauses[i]);
+                    printf("\n");
+                    // Check clause validity
+                    int literals[50];
+                    int litCount = 0;
+                    varMapSize = 0; // Reset mapping for each clause
+                    extractLiterals(clauses[i], literals, &litCount);
+                    bool clauseValid = false;
+                    for (int j = 0; j < litCount; j++)
+                    {
+                        for (int k = 0; k < litCount; k++)
+                        {
+                            if (j != k && literals[j] == -literals[k])
+                            {
+                                clauseValid = true;
+                                break;
+                            }
+                        }
+                        if (clauseValid)
+                            break;
+                    }
+                    printf("  This clause is %s\n", clauseValid ? "valid" : "invalid");
+                    if (!clauseValid)
+                        overallValid = false;
+                }
+                printf("Overall formula is %s\n", overallValid ? "VALID" : "NOT VALID");
                 freeTree(cnfTree);
             }
             break;
@@ -1315,6 +1356,156 @@ int main()
             printf("Tree structure (directory like):\n");
             printTreeAscii(tree);
             break;
+
+        case 16:
+            if (dimacsFormula == NULL)
+            {
+                printf("No DIMACS formula loaded.\n");
+            }
+            else
+            {
+                varMapSize = 0;
+                for (int i = 1; i <= dimacsFormula->numVars; i++)
+                {
+                    char name;
+                    if (i <= 26)
+                    {
+                        name = 'a' + (i - 1);
+                    }
+                    else if (i <= 52)
+                    {
+                        name = 'A' + (i - 27);
+                    }
+                    else if (i <= 62)
+                    {
+                        name = '0' + (i - 53);
+                    }
+                    else
+                    {
+                        // Use printable ASCII characters from 33 (!) to 126 (~)
+                        int offset = (i - 63) % 94;
+                        name = 33 + offset;
+                    }
+                    varMap[varMapSize].charVar = name;
+                    varMap[varMapSize].intVar = i;
+                    varMapSize++;
+                }
+                printf("Names assigned automatically.\n");
+                printVarMapping();
+            }
+            break;
+
+        case 17:
+        {
+            printf("Enter infix formula (fully parenthesized): ");
+            fgets(formula, sizeof(formula), stdin);
+            formula[strcspn(formula, "\n")] = 0;
+
+            Node *truthTree = buildParseTree(formula);
+            if (truthTree == NULL)
+            {
+                printf("Error: Invalid formula.\n");
+                break;
+            }
+
+            char vars[26];
+            int varCount = 0;
+            collectVariables(truthTree, vars, &varCount);
+
+            if (varCount == 0)
+            {
+                printf("No variables found in formula.\n");
+                freeTree(truthTree);
+                break;
+            }
+
+            if (varCount > 10)
+            {
+                printf("Warning: %d variables will generate 2^%d = %d rows. Proceed? (y/n): ", varCount, varCount, 1 << varCount);
+                char ch;
+                scanf(" %c", &ch);
+                if (ch != 'y' && ch != 'Y')
+                {
+                    freeTree(truthTree);
+                    break;
+                }
+            }
+
+            // Print header
+            printf("\nTruth Table for: ");
+            inorderTraversal(truthTree);
+            printf("\n\n");
+            for (int i = 0; i < varCount; i++)
+            {
+                printf("%c ", vars[i]);
+            }
+            printf("Result\n");
+            for (int i = 0; i < varCount + 6; i++)
+            {
+                printf("-");
+            }
+            printf("\n");
+
+            // Generate all assignments
+            int totalAssignments = 1 << varCount;
+            for (int assignment = 0; assignment < totalAssignments; assignment++)
+            {
+                TruthAssignment truthAssignments[26];
+                for (int i = 0; i < varCount; i++)
+                {
+                    truthAssignments[i].variable = vars[i];
+                    truthAssignments[i].value = (assignment >> i) & 1;
+                    printf("%d ", truthAssignments[i].value);
+                }
+
+                int result = evaluateFormula(truthTree, truthAssignments, varCount);
+                printf("%s\n", result ? "T" : "F");
+            }
+
+            // Ask user to save truth table to file
+            printf("Do you want to save the truth table to a file? (y/n): ");
+            char saveChoice;
+            scanf(" %c", &saveChoice);
+            if (saveChoice == 'y' || saveChoice == 'Y') {
+                printf("Enter filename: ");
+                char filename[100];
+                scanf("%s", filename);
+                FILE *file = fopen(filename, "w");
+                if (file == NULL) {
+                    printf("Error: Cannot open file %s\n", filename);
+                } else {
+                    fprintf(file, "Truth Table for: ");
+                    inorderTraversal(truthTree);
+                    fprintf(file, "\n\n");
+                    for (int i = 0; i < varCount; i++) {
+                        fprintf(file, "%c ", vars[i]);
+                    }
+                    fprintf(file, "Result\n");
+                    for (int i = 0; i < varCount + 6; i++) {
+                        fprintf(file, "-");
+                    }
+                    fprintf(file, "\n");
+
+                    // Generate all assignments again
+                    for (int assignment = 0; assignment < totalAssignments; assignment++) {
+                        TruthAssignment truthAssignments[26];
+                        for (int i = 0; i < varCount; i++) {
+                            truthAssignments[i].variable = vars[i];
+                            truthAssignments[i].value = (assignment >> i) & 1;
+                            fprintf(file, "%d ", truthAssignments[i].value);
+                        }
+
+                        int result = evaluateFormula(truthTree, truthAssignments, varCount);
+                        fprintf(file, "%s\n", result ? "T" : "F");
+                    }
+                    fclose(file);
+                    printf("Truth table saved to %s\n", filename);
+                }
+            }
+
+            freeTree(truthTree);
+            break;
+        }
 
         case 0:
             if (tree != NULL)
