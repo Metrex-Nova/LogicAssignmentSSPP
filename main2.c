@@ -831,7 +831,7 @@ void freeTree(Node *root)
     freeTree(root->left);
     freeTree(root->right);
     free(root);
-}
+} 
 
 // Print functions
 void printPreorder(Node *root)

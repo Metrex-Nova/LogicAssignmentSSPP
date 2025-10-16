@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preorder Traversal Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .code-line {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            border-radius: 4px;
+        }
+        .code {
+            color: #d63384;
+            font-weight: bold;
+        }
+        .explanation {
+            margin-top: 10px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .key-point {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+        }
+        .note {
+            background-color: #d1ecf1;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preorder Tree Traversal - Line by Line Explanation</h1>
+        
+        <div class="code-line">
+            <span class="code">void printPreorder(Node *root)</span>
+            <div class="explanation">
+                <strong>Function Declaration:</strong> This declares a function named <code>printPreorder</code> that takes a pointer to a Node structure as its parameter. The function returns void (no return value). The parameter <code>root</code> represents the current node being visited in the tree.
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">{</span>
+            <div class="explanation">
+                <strong>Opening Brace:</strong> Marks the beginning of the function body where all the logic is contained.
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">if (root == NULL)</span>
+            <div class="explanation">
+                <strong>Base Case Check:</strong> This is the stopping condition for the recursion. It checks whether the current node pointer is NULL (i.e., the node doesn't exist). This happens when:
+                <ul>
+                    <li>We've reached a leaf node and try to visit its non-existent children</li>
+                    <li>The tree itself is empty (root is NULL from the start)</li>
+                </ul>
+            </div>
+            <div class="key-point">
+                <strong>Why this is critical:</strong> Without this check, the program would crash with a segmentation fault when trying to access NULL->value.
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">return;</span>
+            <div class="explanation">
+                <strong>Early Return:</strong> If the node is NULL, immediately exit this function call without doing anything. This terminates the current recursive branch and returns control to the calling function.
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">printf("%c ", root->value);</span>
+            <div class="explanation">
+                <strong>Process Current Node:</strong> Print the value stored in the current node followed by a space. The <code>%c</code> format specifier indicates the value is a character. This line executes <strong>before</strong> visiting children, which is what makes this a <strong>preorder</strong> traversal.
+            </div>
+            <div class="key-point">
+                <strong>Preorder Definition:</strong> Visit order is Root → Left → Right. The root is processed first.
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">printPreorder(root->left);</span>
+            <div class="explanation">
+                <strong>Recursive Call - Left Subtree:</strong> Make a recursive call to process the entire left subtree. This call:
+                <ul>
+                    <li>Accesses the left child of the current node using <code>root->left</code></li>
+                    <li>Treats that left child as the new root of its own subtree</li>
+                    <li>Recursively prints all nodes in the left subtree in preorder fashion</li>
+                    <li>Only returns when the entire left subtree has been traversed</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">printPreorder(root->right);</span>
+            <div class="explanation">
+                <strong>Recursive Call - Right Subtree:</strong> After the left subtree is completely processed, make a recursive call to process the entire right subtree. This call:
+                <ul>
+                    <li>Accesses the right child of the current node using <code>root->right</code></li>
+                    <li>Treats that right child as the new root of its own subtree</li>
+                    <li>Recursively prints all nodes in the right subtree in preorder fashion</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="code-line">
+            <span class="code">}</span>
+            <div class="explanation">
+                <strong>Closing Brace:</strong> Marks the end of the function. When execution reaches here, the function returns control to its caller (either the previous recursive call or the original caller).
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Example Execution:</strong><br>
+            For a tree: &nbsp;&nbsp; A<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ \<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp; C<br><br>
+            Output: <code>A B C</code><br><br>
+            <strong>Execution Flow:</strong><br>
+            1. Print A (root)<br>
+            2. Recursively visit left subtree → Print B<br>
+            3. Recursively visit right subtree → Print C
+        </div>
+
+        <div class="note">
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes, since each node is visited exactly once.<br>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, due to the recursive call stack.
+        </div>
+    </div>
+</body>
+</html>
