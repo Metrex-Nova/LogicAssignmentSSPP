@@ -1,0 +1,55 @@
+<h1>Function: <code>freeDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Free DIMACS formula
+void freeDIMACS(DIMACSFormula *formula)
+{
+    if (formula == NULL)
+        return;
+
+    for (int i = 0; i < formula->numClauses; i++)
+    {
+        free(formula->clauses[i].literals);
+    }
+    free(formula->clauses);
+    free(formula);
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">void freeDIMACS(DIMACSFormula *formula)</pre>
+        Declares a function to safely free all dynamically allocated memory associated with a <code>DIMACSFormula</code> structure.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (formula == NULL)
+    return;</pre>
+        Checks if the pointer to the formula is <code>NULL</code>. If so, it returns immediately to avoid freeing memory that doesn't exist.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; formula->numClauses; i++)</pre>
+        Iterates through each clause in the formula.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">free(formula->clauses[i].literals);</pre>
+        Frees the dynamically allocated array of literals for each clause.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">free(formula->clauses);</pre>
+        Frees the dynamically allocated array of clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">free(formula);</pre>
+        Frees the memory allocated for the DIMACS formula structure itself.
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<h1>Function: <code>printVarMapping</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Print variable mapping
+void printVarMapping()
+{
+    printf("\nVariable Mapping:\n");
+    printf("Char -> Integer\n");
+    for (int i = 0; i < varMapSize; i++)
+    {
+        printf("  %c   ->   %d\n", varMap[i].charVar, varMap[i].intVar);
+    }
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">void printVarMapping()</pre>
+        Declares a function that prints all currently mapped variables from their character form to their assigned integer identifiers.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("\nVariable Mapping:\n");
+printf("Char -> Integer\n");</pre>
+        Prints header lines to indicate the start of the variable mapping output and the mapping format.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; varMapSize; i++)</pre>
+        Iterates through all entries in the global variable mapping array.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("  %c   ->   %d\n", varMap[i].charVar, varMap[i].intVar);</pre>
+        Prints each character variable and its corresponding integer value in a readable format.
+    </div>
+</div>

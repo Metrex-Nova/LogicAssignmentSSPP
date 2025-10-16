@@ -1,0 +1,114 @@
+<h1>Function: <code>treeToDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Convert parse tree (CNF) to DIMACS format
+DIMACSFormula *treeToDIMACS(Node *cnfRoot)
+{
+    DIMACSFormula *formula = (DIMACSFormula *)malloc(sizeof(DIMACSFormula));
+
+    // Reset variable mapping
+    varMapSize = 0;
+
+    // Extract all clauses
+    Node *clauseNodes[100];
+    int clauseCount = 0;
+    extractClauses(cnfRoot, clauseNodes, &clauseCount, 100);
+
+    // Allocate memory for clauses
+    formula->clauses = (Clause *)malloc(clauseCount * sizeof(Clause));
+    formula->numClauses = clauseCount;
+
+    // Convert each clause
+    for (int i = 0; i < clauseCount; i++)
+    {
+        int literals[50];
+        int litCount = 0;
+
+        extractLiterals(clauseNodes[i], literals, &litCount);
+
+        formula->clauses[i].literals = (int *)malloc(litCount * sizeof(int));
+        formula->clauses[i].size = litCount;
+
+        for (int j = 0; j < litCount; j++)
+        {
+            formula->clauses[i].literals[j] = literals[j];
+        }
+    }
+
+    formula->numVars = varMapSize;
+
+    return formula;
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">DIMACSFormula *treeToDIMACS(Node *cnfRoot)</pre>
+        Defines a function to convert a CNF parse tree into the DIMACS CNF format representation. It takes a pointer to the root node of the CNF tree and returns a pointer to a <code>DIMACSFormula</code> structure.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">DIMACSFormula *formula = (DIMACSFormula *)malloc(sizeof(DIMACSFormula));</pre>
+        Allocates memory dynamically for the DIMACS formula structure which will hold the converted CNF data.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">varMapSize = 0;</pre>
+        Resets the global variable mapping count to zero, so fresh variable indexing will start with this conversion.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">Node *clauseNodes[100];
+int clauseCount = 0;
+extractClauses(cnfRoot, clauseNodes, &clauseCount, 100);</pre>
+        Creates an array to store pointers to clause nodes and counts how many clauses exist in the CNF parse tree by recursively extracting them.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">formula->clauses = (Clause *)malloc(clauseCount * sizeof(Clause));
+formula->numClauses = clauseCount;</pre>
+        Allocates memory inside the formula structure for the array of clauses based on the number of extracted clauses found. Also sets the number of clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; clauseCount; i++)</pre>
+        Iterates over each clause extracted from the CNF tree.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">int literals[50];
+int litCount = 0;
+
+extractLiterals(clauseNodes[i], literals, &litCount);</pre>
+        For each clause, prepares to extract literals into an array. Calls <code>extractLiterals</code> to populate the array and count the literals.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">formula->clauses[i].literals = (int *)malloc(litCount * sizeof(int));
+formula->clauses[i].size = litCount;</pre>
+        Allocates dynamic memory for the literals of the current clause inside the formula structure and records how many literals it contains.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int j = 0; j &lt; litCount; j++)
+{
+    formula->clauses[i].literals[j] = literals[j];
+}</pre>
+        Copies each literal from the temporary array into the formula’s clause literals array.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">formula->numVars = varMapSize;</pre>
+        Updates the number of distinct variables found in the entire CNF expression, as tracked by <code>varMapSize</code>.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">return formula;</pre>
+        Returns the pointer to the fully constructed DIMACS formula structure.
+    </div>
+</div>

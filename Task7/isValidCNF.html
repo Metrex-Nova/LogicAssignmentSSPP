@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isValidCNF Function</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Function: <code>isValidCNF</code></h1>
+
+        <!-- Code Snippet -->
+        <pre>
+bool isValidCNF(Node *cnfRoot)
+{
+    if (cnfRoot == NULL)
+        return false;
+
+    Node *clauses[100];
+    int clauseCount = 0;
+    extractClauses(cnfRoot, clauses, &clauseCount, 100);
+
+    if (clauseCount == 0)
+        return false;
+
+    for (int i = 0; i < clauseCount; i++)
+    {
+        int literals[50];
+        int litCount = 0;
+        varMapSize = 0; // Reset mapping for each clause
+        extractLiterals(clauses[i], literals, &litCount);
+
+        // Check for complementary pair
+        bool foundComplementary = false;
+        for (int j = 0; j < litCount; j++)
+        {
+            for (int k = 0; k < litCount; k++)
+            {
+                if (j != k && literals[j] == -literals[k])
+                {
+                    foundComplementary = true;
+                    break;
+                }
+            }
+            if (foundComplementary)
+                break;
+        }
+        if (!foundComplementary)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+</pre>
+
+        <!-- Explanation -->
+
+        <div class="container">
+            <h2>Line-by-Line Explanation</h2>
+
+            <div class="explanation">
+                <pre class="code-line">bool isValidCNF(Node *cnfRoot)</pre>
+                Declares a function named <code>isValidCNF</code> that checks if a given CNF (Conjunctive Normal Form) expression is logically valid. It takes a pointer to the root node of a CNF tree and returns a boolean value (<code>true</code> or <code>false</code>).
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">if (cnfRoot == NULL)
+    return false;</pre>
+                Verifies that the CNF tree exists. If the input root is <code>NULL</code>, it means there is no expression to check, so the function returns <code>false</code>.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">Node *clauses[100];
+int clauseCount = 0;
+extractClauses(cnfRoot, clauses, &clauseCount, 100);</pre>
+                Creates an array to hold up to 100 clause nodes. Initializes the clause count to zero and calls <code>extractClauses</code> to fill the array with actual CNF clauses extracted from the root.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">if (clauseCount == 0)
+    return false;</pre>
+                If no clauses were found in the CNF tree, the function returns <code>false</code> because a CNF without clauses is not valid.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">for (int i = 0; i < clauseCount; i++)</pre>
+                Iterates through each clause extracted from the CNF tree for evaluation.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">int literals[50];
+int litCount = 0;
+varMapSize = 0;
+extractLiterals(clauses[i], literals, &litCount);</pre>
+                Prepares an array to store up to 50 literals from the current clause. Resets the variable mapping size and uses <code>extractLiterals()</code> to extract all literal values (like variables and their negations) from the current clause.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">bool foundComplementary = false;</pre>
+                Initializes a boolean flag that will be used to check whether the current clause contains a complementary literal pair (for example, <code>x</code> and <code>-x</code>).
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">for (int j = 0; j < litCount; j++) {
+    for (int k = 0; k < litCount; k++) {
+        if (j != k && literals[j] == -literals[k]) {
+            foundComplementary = true;
+            break;
+        }
+    }
+    if (foundComplementary)
+        break;
+}</pre>
+                Uses nested loops to compare every pair of literals in the current clause. If one literal is the negation of another (like <code>a</code> and <code>-a</code>), the clause is tautological and therefore valid. It sets <code>foundComplementary</code> to <code>true</code> when such a pair is found.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">if (!foundComplementary)
+    return false;</pre>
+                If no complementary literal pair is found in a clause, that clause is not valid in this CNF context, so the function stops and returns <code>false</code>.
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">return true;</pre>
+                If all clauses contain at least one complementary literal pair, the CNF is considered valid and the function returns <code>true</code>.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<h1>Function: <code>extractLiterals</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Extract literals from a clause (OR expression)
+void extractLiterals(Node *clause, int *literals, int *litCount)
+{
+    if (clause == NULL)
+        return;
+
+    // If it's an OR node, recursively extract from both sides
+    if (clause->value == '+')
+    {
+        extractLiterals(clause->left, literals, litCount);
+        extractLiterals(clause->right, literals, litCount);
+    }
+    // If it's a negation
+    else if (clause->value == '~')
+    {
+        if (clause->left != NULL && !isOperator(clause->left->value))
+        {
+            int varNum = getIntVar(clause->left->value);
+            literals[(*litCount)++] = -varNum;
+        }
+    }
+    // If it's a literal (variable)
+    else if (!isOperator(clause->value))
+    {
+        int varNum = getIntVar(clause->value);
+        literals[(*litCount)++] = varNum;
+    }
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">// Extract literals from a clause (OR expression)</pre>
+        This comment indicates the function’s purpose — to extract all literals (variables or their negations) from a clause in a CNF expression that uses the OR operator.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">void extractLiterals(Node *clause, int *literals, int *litCount)</pre>
+        Declares the function <code>extractLiterals</code>, which takes a clause node, an array to store integer representations of literals, and a pointer to the count of literals found.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (clause == NULL)
+    return;</pre>
+        Checks for an empty clause. If the node is <code>NULL</code>, the function returns immediately because there’s nothing to process.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (clause-&gt;value == '+')</pre>
+        Verifies if the clause is an OR operation (<code>+</code>), meaning it combines two literals or sub-clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">{
+    extractLiterals(clause-&gt;left, literals, litCount);
+    extractLiterals(clause-&gt;right, literals, litCount);
+}</pre>
+        Recursively extracts literals from both the left and right child nodes, collecting all individual literals that make up the OR expression.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">else if (clause-&gt;value == '~')</pre>
+        Checks if the current node represents a logical negation (<code>~</code>).
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (clause-&gt;left != NULL && !isOperator(clause-&gt;left-&gt;value))</pre>
+        Ensures the left child of the negation node exists and is not itself an operator (meaning it’s a variable, not a compound expression).
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">int varNum = getIntVar(clause-&gt;left-&gt;value);
+literals[(*litCount)++] = -varNum;</pre>
+        Retrieves the integer ID for the variable using <code>getIntVar()</code> and stores its negation (using <code>-varNum</code>) in the literals array.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">else if (!isOperator(clause-&gt;value))</pre>
+        Checks if the node is a literal (a direct variable) rather than an operator. 
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">int varNum = getIntVar(clause-&gt;value);
+literals[(*litCount)++] = varNum;</pre>
+        Converts the variable character (like <code>'A'</code>) into its integer form and stores it in the literals array, incrementing the literal count.
+    </div>
+</div>

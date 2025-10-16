@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extract Clauses Function</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+  <div class="chapter-content">
+    <h1>Explanation: <code>extractClauses</code> Function</h1>
+
+    <pre><code>void extractClauses(Node *root, Node **clauses, int *count, int maxClauses)
+{
+    if (root == NULL || *count >= maxClauses)
+        return;
+
+    if (root->value == '*')
+    {
+        extractClauses(root->left, clauses, count, maxClauses);
+        extractClauses(root->right, clauses, count, maxClauses);
+    }
+    else
+    {
+        clauses[(*count)++] = root;
+    }
+}
+</code></pre>
+
+
+    <div class="container">
+      <pre class="code-line">void extractClauses(Node *root, Node **clauses, int *count, int maxClauses)</pre>
+      <div class="explanation">
+        Defines a function named <code>extractClauses</code> that takes a pointer to the root of a CNF subtree, an array
+        of clause pointers, a pointer to the number of clauses collected, and the maximum number of clauses allowed.
+      </div>
+    </div>
+
+    <div class="container">
+      <pre class="code-line">if (root == NULL || *count >= maxClauses)
+    return;</pre>
+      <div class="explanation">
+        Checks if the root is <code>NULL</code> (no node to process) or if the maximum number of allowed clauses has
+        been reached. If either is true, the function returns immediately without further processing.
+      </div>
+    </div>
+
+    <div class="container">
+      <pre class="code-line">if (root-&gt;value == '*')</pre>
+      <div class="explanation">
+        Checks if the current node represents a logical AND operator (<code>*</code>), which indicates multiple clauses
+        in a CNF expression.
+      </div>
+    </div>
+
+    <div class="container">
+      <pre class="code-line">{
+    extractClauses(root-&gt;left, clauses, count, maxClauses);
+    extractClauses(root-&gt;right, clauses, count, maxClauses);
+}</pre>
+      <div class="explanation">
+        If the node is an AND node, recursively extract clauses from the left and right subtrees. This effectively
+        splits a CNF expression of the form <code>(A * B)</code> into two clauses <code>A</code> and <code>B</code>.
+      </div>
+    </div>
+
+    <div class="container">
+      <pre class="code-line">else
+{
+    clauses[(*count)++] = root;
+}</pre>
+      <div class="explanation">
+        If the node is not an AND operator, it represents a single clause. The function adds the node (clause) to the
+        <code>clauses</code> array and increments the clause count.
+      </div>
+    </div>
+
+</body>
+
+</html>

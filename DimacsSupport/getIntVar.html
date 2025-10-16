@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>getIntVar Function</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Function: <code>getIntVar</code></h1>
+
+        <!-- Code Snippet -->
+        <pre>
+int getIntVar(char charVar)
+{
+    for (int i = 0; i < varMapSize; i++)
+    {
+        if (varMap[i].charVar == charVar)
+        {
+            return varMap[i].intVar;
+        }
+    }
+
+    // Create new mapping
+    varMap[varMapSize].charVar = charVar;
+    varMap[varMapSize].intVar = varMapSize + 1;
+    varMapSize++;
+
+    return varMapSize;
+}
+        </pre>
+
+        <!-- Explanation -->
+        <div class="container">
+            <h2>Line-by-Line Explanation</h2>
+
+            <div class="explanation">
+                <pre class="code-line">int getIntVar(char charVar)</pre>
+                <p>Defines a function named <code>getIntVar</code> that takes a character variable (representing a variable like <code>'A'</code> or <code>'B'</code>) and returns a unique integer identifier for it.</p>
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">for (int i = 0; i < varMapSize; i++)</pre>
+                <p>Starts a loop that iterates through all existing variable mappings to check if the character was previously assigned an integer.</p>
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">if (varMap[i].charVar == charVar)
+{
+    return varMap[i].intVar;
+}</pre>
+                <p>If an entry in the mapping already matches the input character variable, the corresponding integer value is returned immediately.</p>
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">// Create new mapping
+varMap[varMapSize].charVar = charVar;
+varMap[varMapSize].intVar = varMapSize + 1;
+varMapSize++;</pre>
+                <p>If the character is not yet in the mapping table, a new entry is created.</p>
+                <ul>
+                    <li>The character is stored in <code>varMap[varMapSize].charVar</code>.</li>
+                    <li>A unique integer ID is assigned as <code>varMapSize + 1</code>.</li>
+                    <li>The mapping size counter <code>varMapSize</code> is incremented to record the new variable.</li>
+                </ul>
+            </div>
+
+            <div class="explanation">
+                <pre class="code-line">return varMapSize;</pre>
+                <p>Returns the newly assigned integer value for the given character variable.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

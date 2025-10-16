@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribute OR Over AND Function Explanation</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h1>Explanation: <code>distributeOrOverAnd</code> Function with Improved Cloning</h1>
+
+        <pre><code>Node *distributeOrOverAnd(Node *root)
+{
+    if (root == NULL)
+        return NULL;
+
+    root->left = distributeOrOverAnd(root->left);
+    root->right = distributeOrOverAnd(root->right);
+
+    if (root->value == '+')
+    {
+        if (root->left != NULL && root->left->value == '*')
+        {
+            Node *andNode = root->left;
+
+            // Clone all components we need
+            Node *p = cloneTree(andNode->left);
+            Node *q = cloneTree(andNode->right);
+            Node *r = cloneTree(root->right);
+
+            // Build (p + r) and (q + r)
+            Node *or1 = createNode('+');
+            or1->left = p;
+            or1->right = cloneTree(r); // Need separate clone for or1
+
+            Node *or2 = createNode('+');
+            or2->left = q;
+            or2->right = r; // Use the original r clone for or2
+
+            Node *newAnd = createNode('*');
+            newAnd->left = distributeOrOverAnd(or1);
+            newAnd->right = distributeOrOverAnd(or2);
+
+            free(andNode);
+            free(root);
+            return newAnd;
+        }
+
+        if (root->right != NULL && root->right->value == '*')
+        {
+            Node *andNode = root->right;
+
+            // Clone all components we need
+            Node *p = cloneTree(root->left);
+            Node *q = cloneTree(andNode->left);
+            Node *r = cloneTree(andNode->right);
+
+            // Build (p + q) and (p + r)
+            Node *or1 = createNode('+');
+            or1->left = cloneTree(p); // Need separate clone for or1
+            or1->right = q;
+
+            Node *or2 = createNode('+');
+            or2->left = p; // Use the original p clone for or2
+            or2->right = r;
+
+            Node *newAnd = createNode('*');
+            newAnd->left = distributeOrOverAnd(or1);
+            newAnd->right = distributeOrOverAnd(or2);
+
+            free(andNode);
+            free(root);
+            return newAnd;
+        }
+    }
+
+    return root;
+}
+</code></pre>
+
+        <ul>
+          <li>
+            <b>Function Purpose:</b><br>
+            Implements distribution of OR over AND in a binary parse tree, applying the distributive law to convert logical formulas towards CNF. It recursively transforms the tree with careful node cloning to avoid shared subtrees.
+          </li>
+        </ul>
+
+        <h2>Detailed Explanation</h2>
+        <ul>
+          <li>
+            <code>if (root == NULL) return NULL;</code><br>
+            Base case for recursion: returns NULL when the current subtree doesn't exist.
+          </li>
+
+          <li>
+            <code>root->left = distributeOrOverAnd(root->left);</code><br>
+            Recursively processes the left subtree.
+          </li>
+
+          <li>
+            <code>root->right = distributeOrOverAnd(root->right);</code><br>
+            Recursively processes the right subtree.
+          </li>
+
+          <li>
+            <code>if (root->value == '+') { ... }</code><br>
+            Processes only OR nodes for distribution:
+            <ul>
+              <li>
+                <b>Case 1: OR node with left child AND node</b><br>
+                Matches form: \((p * q) + r\)  
+                Applies distributive law: \((p + r) * (q + r)\)
+                <ul>
+                  <li>Clones operands <code>p</code>, <code>q</code>, and <code>r</code> to ensure separate subtrees.</li>
+                  <li>Creates two OR nodes: one for \((p + r)\), the other for \((q + r)\).  
+                  Clones <code>r</code> for left OR subtree to avoid shared pointers.</li>
+                  <li>Creates an AND node combining these two OR subtrees.</li>
+                  <li>Recursively distributes over these new subtrees.</li>
+                  <li>Frees the old AND child and original OR root nodes.</li>
+                  <li>Returns the new AND node representing the distributed subtree.</li>
+                </ul>
+              </li>
+
+              <li>
+                <b>Case 2: OR node with right child AND node</b><br>
+                Matches form: \(p + (q * r)\)  
+                Applies distributive law: \((p + q) * (p + r)\)
+                <ul>
+                  <li>Clones operands <code>p</code>, <code>q</code>, and <code>r</code>.</li>
+                  <li>Creates two OR nodes: one for \((p + q)\), cloning <code>p</code> for the first; the other for \((p + r)\), using original <code>p</code> for the second.</li>
+                  <li>Combines these OR nodes with an AND node.</li>
+                  <li>Recursively distributes these new trees.</li>
+                  <li>Frees the old AND child and original OR root nodes.</li>
+                  <li>Returns the new AND node.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <code>return root;</code><br>
+            If the node is not an OR with an AND child, the function returns it unchanged (but its subtrees have been processed).
+          </li>
+        </ul>
+
+        <h2>Key Points</h2>
+        <ul>
+          <li>Cloning tree nodes carefully avoids sharing pointers between multiple parts of the tree, preventing unintended side effects during recursive modifications.</li>
+          <li>Memory is managed carefully by freeing old nodes after replacement.</li>
+          <li>Recursion ensures distribution is applied thoroughly throughout the tree structure.</li>
+          <li>This function is a crucial step toward producing formulas in Conjunctive Normal Form (CNF).</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <pre><code>Node* root = buildParseTree("(A*B)+C");
+root = distributeOrOverAnd(root);
+// The tree now represents (A+C)*(B+C)
+</code></pre>
+    </div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<h1>Function: <code>evaluateDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Evaluate DIMACS formula with assignment
+bool evaluateDIMACS(DIMACSFormula *formula, int *assignment)
+{
+    // Formula is true if all clauses are true
+    for (int i = 0; i < formula->numClauses; i++)
+    {
+        bool clauseTrue = false;
+
+        // Clause is true if at least one literal is true
+        for (int j = 0; j < formula->clauses[i].size; j++)
+        {
+            int lit = formula->clauses[i].literals[j];
+            int var = abs(lit);
+            bool value = assignment[var];
+
+            // Check if literal is satisfied
+            if ((lit > 0 && value) || (lit < 0 && !value))
+            {
+                clauseTrue = true;
+                break;
+            }
+        }
+
+        if (!clauseTrue)
+        {
+            return false; // Formula is false
+        }
+    }
+
+    return true; // All clauses satisfied
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">bool evaluateDIMACS(DIMACSFormula *formula, int *assignment)</pre>
+        Defines a function that evaluates whether a DIMACS CNF formula is satisfied by a given Boolean assignment of variables. The <code>assignment</code> array holds truth values indexed by variable number.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; formula->numClauses; i++)</pre>
+        Iterates over each clause in the formula. The formula is true only if every clause evaluates to true.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">bool clauseTrue = false;</pre>
+        Initializes a flag to track whether the current clause is satisfied.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int j = 0; j &lt; formula->clauses[i].size; j++)</pre>
+        Iterates over the literals in the current clause.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">int lit = formula->clauses[i].literals[j];
+int var = abs(lit);
+bool value = assignment[var];</pre>
+        Retrieves the literal integer value, then computes the variable index by absolute value of the literal. Gets the truth assignment of that variable.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if ((lit &gt; 0 &amp;&amp; value) || (lit &lt; 0 &amp;&amp; !value))
+{
+    clauseTrue = true;
+    break;
+}</pre>
+        Checks if the literal evaluates to true under the given assignment:
+        - If the literal is positive and assigned true, or
+        - If the literal is negated (negative) and assigned false.
+        If so, the clause is true, so set the flag and break out early.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (!clauseTrue)
+{
+    return false; // Formula is false
+}</pre>
+        If no literal satisfied the clause, the clause (and thus the formula) is false, so return <code>false</code>.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">return true;</pre>
+        If all clauses were satisfied, return <code>true</code>, meaning the formula is satisfied by the assignment.
+    </div>
+</div>

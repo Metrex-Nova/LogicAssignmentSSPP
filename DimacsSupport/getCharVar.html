@@ -1,0 +1,46 @@
+<h1>Function: <code>getCharVar</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+char getCharVar(int intVar)
+{
+    for (int i = 0; i < varMapSize; i++)
+    {
+        if (varMap[i].intVar == intVar)
+        {
+            return varMap[i].charVar;
+        }
+    }
+    return '?';
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">char getCharVar(int intVar)</pre>
+        Declares a function named <code>getCharVar</code> that takes an integer variable identifier and returns the corresponding character variable (like converting <code>1</code> back to <code>'A'</code>).
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; varMapSize; i++)</pre>
+        Iterates through all existing mappings in the <code>varMap</code> array to find the matching integer variable.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (varMap[i].intVar == intVar)
+{
+    return varMap[i].charVar;
+}</pre>
+        Checks if the current mapping entry’s integer value matches the input <code>intVar</code>.  
+        If found, the corresponding character variable is returned immediately.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">return '?';</pre>
+        If no match is found after checking all entries, the function returns a <code>'?'</code> character to indicate that the integer does not correspond to any known variable in the mapping.
+    </div>
+</div>

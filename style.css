@@ -214,16 +214,12 @@ header p {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.4s ease;
     cursor: pointer;
     animation: slideUp 0.6s ease-out;
     color: #f8f8f8;
 }
 
-.blog-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-}
+
 
 .blog-card-header {
     background: linear-gradient(135deg, #23283a 0%, #00ccff 100%);

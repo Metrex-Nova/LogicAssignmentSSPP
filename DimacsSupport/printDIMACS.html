@@ -1,0 +1,63 @@
+<h1>Function: <code>printDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Print DIMACS format
+void printDIMACS(DIMACSFormula *formula)
+{
+    printf("c DIMACS CNF Format\n");
+    printf("c Generated from parse tree\n");
+    printf("p cnf %d %d\n", formula->numVars, formula->numClauses);
+
+    for (int i = 0; i < formula->numClauses; i++)
+    {
+        for (int j = 0; j < formula->clauses[i].size; j++)
+        {
+            printf("%d ", formula->clauses[i].literals[j]);
+        }
+        printf("0\n");
+    }
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">void printDIMACS(DIMACSFormula *formula)</pre>
+        Declares a function named <code>printDIMACS</code> which takes a pointer to a <code>DIMACSFormula</code> structure and prints its contents in the standard DIMACS CNF format.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("c DIMACS CNF Format\n");
+printf("c Generated from parse tree\n");</pre>
+        Prints comments in the DIMACS file format to indicate that this is a CNF formula and was generated from a parse tree.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("p cnf %d %d\n", formula->numVars, formula->numClauses);</pre>
+        Prints the problem line, specifying the format ("cnf"), the number of variables, and the number of clauses in the formula.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; formula->numClauses; i++)</pre>
+        Loops through each clause in the formula.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int j = 0; j &lt; formula->clauses[i].size; j++)</pre>
+        Loops through each literal in the current clause.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("%d ", formula->clauses[i].literals[j]);</pre>
+        Prints each literal as an integer, followed by a space. Negative integers represent negated literals.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("0\n");</pre>
+        Prints <code>0</code> at the end of each clause line, which signals the end of that clause in DIMACS format.
+    </div>
+</div>

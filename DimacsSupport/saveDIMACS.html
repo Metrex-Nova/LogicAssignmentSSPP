@@ -1,0 +1,93 @@
+<h1>Function: <code>saveDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Save DIMACS to file
+void saveDIMACS(DIMACSFormula *formula, const char *filename)
+{
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        printf("Error: Cannot open file %s\n", filename);
+        return;
+    }
+
+    fprintf(file, "c DIMACS CNF Format\n");
+    fprintf(file, "c Generated from parse tree\n");
+    fprintf(file, "p cnf %d %d\n", formula->numVars, formula->numClauses);
+
+    for (int i = 0; i < formula->numClauses; i++)
+    {
+        for (int j = 0; j < formula->clauses[i].size; j++)
+        {
+            fprintf(file, "%d ", formula->clauses[i].literals[j]);
+        }
+        fprintf(file, "0\n");
+    }
+
+    fclose(file);
+    printf("DIMACS formula saved to %s\n", filename);
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">void saveDIMACS(DIMACSFormula *formula, const char *filename)</pre>
+        Declares a function <code>saveDIMACS</code> that takes a pointer to a DIMACS CNF formula structure and a filename string, saving the formula to a file.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">FILE *file = fopen(filename, "w");</pre>
+        Opens the file specified by <code>filename</code> in write mode. Returns a file pointer.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (file == NULL)
+{
+    printf("Error: Cannot open file %s\n", filename);
+    return;
+}</pre>
+        Checks if the file could not be opened (e.g., due to permission issues). Prints an error and exits the function early if so.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">fprintf(file, "c DIMACS CNF Format\n");
+fprintf(file, "c Generated from parse tree\n");
+fprintf(file, "p cnf %d %d\n", formula->numVars, formula->numClauses);</pre>
+        Writes DIMACS file header comments and problem line to the file, including the number of variables and clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int i = 0; i &lt; formula->numClauses; i++)</pre>
+        Loops through all clauses in the formula.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">for (int j = 0; j &lt; formula->clauses[i].size; j++)</pre>
+        Loops through each literal within the current clause.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">fprintf(file, "%d ", formula->clauses[i].literals[j]);</pre>
+        Writes each literal as an integer to the file, followed by a space.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">fprintf(file, "0\n");</pre>
+        Writes zero at the end of each clause line to denote the clause termination, followed by a newline.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">fclose(file);</pre>
+        Closes the file to ensure all data is saved and resources are freed.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("DIMACS formula saved to %s\n", filename);</pre>
+        Prints a confirmation message to the console indicating successful saving.
+    </div>
+</div>

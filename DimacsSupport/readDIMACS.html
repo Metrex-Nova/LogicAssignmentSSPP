@@ -1,0 +1,192 @@
+<h1>Function: <code>readDIMACS</code></h1>
+
+<!-- Code Snippet -->
+<pre>
+// Read DIMACS from file
+DIMACSFormula *readDIMACS(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Error: Cannot open file %s\n", filename);
+        return NULL;
+    }
+
+    DIMACSFormula *formula = (DIMACSFormula *)malloc(sizeof(DIMACSFormula));
+    char line[1024];
+    int numVars = 0, numClauses = 0;
+    int clauseIndex = 0;
+
+    // Read header
+    while (fgets(line, sizeof(line), file))
+    {
+        if (line[0] == 'c')
+            continue; // Comment line
+
+        if (line[0] == 'p')
+        {
+            sscanf(line, "p cnf %d %d", &numVars, &numClauses);
+            formula->numVars = numVars;
+            formula->numClauses = numClauses;
+            formula->clauses = (Clause *)malloc(numClauses * sizeof(Clause));
+            break;
+        }
+    }
+
+    // Read clauses
+    while (fgets(line, sizeof(line), file) && clauseIndex < numClauses)
+    {
+        if (line[0] == 'c' || line[0] == '%' || line[0] == '0')
+            continue;
+
+        int literals[100];
+        int litCount = 0;
+
+        char *token = strtok(line, " \t\n");
+        while (token != NULL)
+        {
+            int lit = atoi(token);
+            if (lit == 0)
+                break;
+            literals[litCount++] = lit;
+            token = strtok(NULL, " \t\n");
+        }
+
+        if (litCount > 0)
+        {
+            formula->clauses[clauseIndex].literals = (int *)malloc(litCount * sizeof(int));
+            formula->clauses[clauseIndex].size = litCount;
+
+            for (int i = 0; i < litCount; i++)
+            {
+                formula->clauses[clauseIndex].literals[i] = literals[i];
+            }
+
+            clauseIndex++;
+        }
+    }
+
+    fclose(file);
+    printf("DIMACS formula loaded: %d variables, %d clauses\n", numVars, clauseIndex);
+    return formula;
+}
+</pre>
+
+<!-- Explanation -->
+
+<div class="container">
+    <h2>Line-by-Line Explanation</h2>
+
+    <div class="explanation">
+        <pre class="code-line">DIMACSFormula *readDIMACS(const char *filename)</pre>
+        Defines a function named <code>readDIMACS</code> that reads a DIMACS CNF file and returns a pointer to a DIMACSFormula structure containing variables and clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">FILE *file = fopen(filename, "r");</pre>
+        Opens the specified file in read mode.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (file == NULL)
+{
+    printf("Error: Cannot open file %s\n", filename);
+    return NULL;
+}</pre>
+        Checks for file open errors. Prints an error message and returns <code>NULL</code> if unable to open the file.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">DIMACSFormula *formula = (DIMACSFormula *)malloc(sizeof(DIMACSFormula));
+char line[1024];
+int numVars = 0, numClauses = 0;
+int clauseIndex = 0;</pre>
+        Allocates memory for the DIMACS formula structure. Initializes buffer for reading lines and variables for counts.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">// Read header
+while (fgets(line, sizeof(line), file))</pre>
+        Reads the file line by line to find the problem header line that specifies the number of variables and clauses.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (line[0] == 'c')
+    continue;</pre>
+        Skips comment lines starting with 'c'.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (line[0] == 'p')
+{
+    sscanf(line, "p cnf %d %d", &numVars, &numClauses);
+    formula->numVars = numVars;
+    formula->numClauses = numClauses;
+    formula->clauses = (Clause *)malloc(numClauses * sizeof(Clause));
+    break;
+}</pre>
+        When the problem line is found (starts with 'p'), it parses the number of variables and clauses, stores them, allocates memory for clauses, then breaks out of the loop.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">// Read clauses
+while (fgets(line, sizeof(line), file) && clauseIndex < numClauses)</pre>
+        Continues reading from the file to extract each clause until all clauses are read.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (line[0] == 'c' || line[0] == '%' || line[0] == '0')
+    continue;</pre>
+        Skips comment lines, percentage sign lines, or lines starting with zero (non-clause lines).
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">int literals[100];
+int litCount = 0;</pre>
+        Temporary array to collect literals in a clause, and a count for how many literals found.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">char *token = strtok(line, " \t\n");
+while (token != NULL)
+{
+    int lit = atoi(token);
+    if (lit == 0)
+        break;
+    literals[litCount++] = lit;
+    token = strtok(NULL, " \t\n");
+}</pre>
+        Tokenizes the line by spaces, tabs, or newlines, converts each token to an integer literal. Zero signals the end of clause literals.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">if (litCount > 0)
+{
+    formula->clauses[clauseIndex].literals = (int *)malloc(litCount * sizeof(int));
+    formula->clauses[clauseIndex].size = litCount;
+
+    for (int i = 0; i < litCount; i++)
+    {
+        formula->clauses[clauseIndex].literals[i] = literals[i];
+    }
+
+    clauseIndex++;
+}</pre>
+        If literals were found, dynamically allocates memory for them in the formula structure, copies them, and increments the clause counter.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">fclose(file);</pre>
+        Closes the file after reading is complete.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">printf("DIMACS formula loaded: %d variables, %d clauses\n", numVars, clauseIndex);</pre>
+        Prints a message indicating how many variables and clauses have been loaded successfully.
+    </div>
+
+    <div class="explanation">
+        <pre class="code-line">return formula;</pre>
+        Returns the pointer to the fully loaded DIMACS formula structure.
+    </div>
+</div>

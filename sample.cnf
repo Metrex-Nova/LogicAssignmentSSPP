@@ -1,0 +1,6 @@
+c DIMACS CNF Format
+c Generated from parse tree
+p cnf 3 3
+1 2 0
+-1 0
+-3 0
