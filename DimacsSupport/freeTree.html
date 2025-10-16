@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explanation of freeTree Function</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="chapter-content">
+        <h2>Explanation of <code>freeTree</code> Function</h2>
+
+        <div class="line">
+            <pre><code>void freeTree(Node *root)</code></pre>
+            <div class="explanation">
+                Declares a function named <code>freeTree</code> that takes a pointer to the root node of a tree.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>{</code></pre>
+            <div class="explanation">
+                Begins the function body.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>    if (root == NULL)</code></pre>
+            <div class="explanation">
+                Checks if the current node pointer is <code>NULL</code> (i.e., the tree or subtree is empty).
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>        return;</code></pre>
+            <div class="explanation">
+                If the node is <code>NULL</code>, exit the function without doing anything.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>    freeTree(root->left);</code></pre>
+            <div class="explanation">
+                Recursively calls <code>freeTree</code> on the left child of the current node.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>    freeTree(root->right);</code></pre>
+            <div class="explanation">
+                Recursively calls <code>freeTree</code> on the right child of the current node.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>    free(root);</code></pre>
+            <div class="explanation">
+                Frees the memory allocated for the current node after its children have been freed.
+            </div>
+        </div>
+
+        <div class="line">
+            <pre><code>}</code></pre>
+            <div class="explanation">
+                Ends the function body.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
