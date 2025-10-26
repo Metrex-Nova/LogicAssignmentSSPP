@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logic Parser Setup Guide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #004080;
+    }
+    code, pre {
+      background-color: #eef;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    pre {
+      padding: 10px;
+      overflow-x: auto;
+    }
+    ul, ol {
+      margin-left: 20px;
+    }
+    a {
+      color: #004080;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Propositional Logic Parser Setup Guide</h1>
+    <p>Instructions for setting up and running the parser from <a href="https://github.com/Metrex-Nova/LogicAssignmentSSPP" target="_blank">GitHub Repository</a>.</p>
+  </header>
+
+  <section>
+    <h2>Prerequisites</h2>
+    <ul>
+      <li>GCC or Clang compiler (version ≥ 9 recommended)</li>
+      <li>GNU Make (optional, for building)</li>
+      <li>Git (optional, for cloning)</li>
+      <li>Basic terminal/command-line knowledge</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Step 1: Clone or Download</h2>
+    <p>Clone the repository or download the ZIP archive:</p>
+    <pre><code>git clone https://github.com/Metrex-Nova/LogicAssignmentSSPP.git
+cd LogicAssignmentSSPP</code></pre>
+  </section>
+
+  <section>
+    <h2>Step 2: Compile the Parser</h2>
+    <p>Compile using Make or manually:</p>
+    <pre><code># Using Make
+make all
+
+# Or manually
+gcc -Wall -O2 -o logic_parser src/*.c</code></pre>
+  </section>
+
+  <section>
+    <h2>Step 3: Run Basic Tests</h2>
+    <p>Verify the parser works:</p>
+    <pre><code># Example command
+./logic_parser "((p∨q)→r)"</code></pre>
+    <p>This outputs the parse tree, prefix notation, CNF, and optionally generates a DIMACS file.</p>
+  </section>
+
+  <section>
+    <h2>Step 4: DIMACS Integration</h2>
+    <ol>
+      <li>Generate DIMACS CNF:
+        <pre><code>./logic_parser --dimacs "((p∨q)∧(¬r∨s))"</code></pre>
+      </li>
+      <li>Save output to <code>formula.cnf</code></li>
+      <li>Run SAT solver:
+        <pre><code>minisat formula.cnf output.sol</code></pre>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Step 5: Optional Configurations</h2>
+    <ul>
+      <li>Increase recursion limit for deep formulas: <code>ulimit -s 65536</code> (Linux/macOS)</li>
+      <li>Use a node pool allocator for large trees to improve performance</li>
+      <li>Enable verbose logging for debugging CNF conversions</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li><strong>Segmentation fault:</strong> Increase stack size or simplify formula.</li>
+      <li><strong>DIMACS not recognized:</strong> Ensure output follows DIMACS format.</li>
+      <li><strong>Slow performance:</strong> Consider Tseitin transformation or hash-based variable mapping.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>References</h2>
+    <ul>
+      <li><a href="https://www.cs.jhu.edu/~jason/tutorials/convert-to-CNF.html" target="_blank">CNF Conversion Techniques</a></li>
+      <li><a href="https://www.princeton.edu/~chaff/publication/DAC2001v56.pdf" target="_blank">SAT Solver Optimizations</a></li>
+      <li><a href="https://webspass.spass-prover.org/help/DimacsSATFormat.pdf" target="_blank">DIMACS File Format</a></li>
+    </ul>
+  </section>
+
+</body>
+</html>

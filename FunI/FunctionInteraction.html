@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Logic Pipeline — Function Interaction Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #0b0f14;
+    color: #e8edf7;
+    margin: 0;
+    padding: 24px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    margin: 10px 0;
+  }
+  h1 { font-size: 28px; }
+  h2 { font-size: 24px; }
+  h3 { font-size: 18px; color: #cfe3ff; }
+  section {
+    background: #101723;
+    border: 1px solid #172033;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+  ul {
+    margin: 8px 0 12px 20px;
+  }
+  li {
+    margin: 6px 0;
+  }
+  code {
+    background: #0f1623;
+    border: 1px solid #21314a;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-family: monospace;
+  }
+  details {
+    background: #0f1623;
+    border: 1px solid #172033;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #5aa9ff;
+  }
+  .note {
+    border-left: 4px solid #5aa9ff;
+    background: #0f1623;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 14px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Logic Pipeline — Function Interaction Map</h1>
+<p>This map shows the current structure of the codebase, how functions call each other, and the flow of data objects. It is organized by modules and highlights ownership, lifetime, and side effects.</p>
+
+<section>
+  <h2>Core Data Types</h2>
+  <ul>
+    <li><code>Node</code>: char value; Node *left, *right; Produced by parsing and CNF transforms; consumed by traversal, evaluation, CNF, DIMACS.</li>
+    <li><code>TruthAssignment</code>: char variable; int value; Produced by variable collection; consumed by evaluation.</li>
+    <li><code>Clause</code> & <code>DIMACSFormula</code>: Clause = int *literals, size; DIMACSFormula = Clause *clauses, numClauses, numVars; Produced by CNF→DIMACS; consumed by evaluation and I/O.</li>
+    <li><code>VarMapping</code>: charVar → intVar; global varMap[]; Used in tree→DIMACS, DIMACS evaluation, variable lookups.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Parsing & Tree Building</h2>
+  <details>
+    <summary>Tree Builders</summary>
+    <ul>
+      <li><code>createNode(value) → Node*</code>: Allocates a node for builders/transformers.</li>
+      <li><code>parseExpression / parseOperand / buildParseTree(infix) → Node*</code>: Builds infix tree; calls <code>createNode</code>.</li>
+      <li><code>buildTreeFromPrefix(prefix)</code> / <code>prefixToTree(prefix)</code> → Node*: Parses prefix recursively; calls <code>createNode</code>.</li>
+      <li><code>treeToPrefix(root, buf) / infixToPrefix(infix)</code>: Reads Node; generates prefix string.</li>
+    </ul>
+    <p>Interactions: Node outputs feed traversal, evaluation, CNF.</p>
+  </details>
+</section>
+
+<section>
+  <h2>Traversal & Structural Utilities</h2>
+  <details>
+    <summary>Tree Utilities</summary>
+    <ul>
+      <li><code>inorderTraversal(root, out)</code> → string</li>
+      <li><code>printPreorder(root, out)</code> → string</li>
+      <li><code>calculateHeight(root)</code> → int</li>
+      <li><code>cloneTree(root)</code> → Node*: Deep copy for CNF transforms</li>
+      <li><code>freeTree(root)</code>: Post-order frees Node allocations</li>
+    </ul>
+    <p>Interactions: Traversals are readers; cloneTree used in CNF distribution.</p>
+  </details>
+</section>
+
+<section>
+  <h2>Evaluation & Variable Support</h2>
+  <details>
+    <summary>Evaluation Functions</summary>
+    <ul>
+      <li><code>collectVariables(root, outVars[])</code> → int count</li>
+      <li><code>getTruthValue(assignments[], var)</code> → int</li>
+      <li><code>evaluateFormula(root, assignments[], count)</code> → int</li>
+    </ul>
+    <p>Interactions: EvaluateFormula depends on Node; collectVariables builds TruthAssignment arrays.</p>
+  </details>
+</section>
+
+<section>
+  <h2>CNF Conversion & Checks</h2>
+  <details>
+    <summary>CNF Functions</summary>
+    <ul>
+      <li><code>eliminateImplications(root)</code></li>
+      <li><code>moveNegationsInward(root)</code></li>
+      <li><code>distributeOrOverAnd(root)</code></li>
+      <li><code>convertToCNF(root)</code>: orchestrates above passes</li>
+      <li><code>extractLiterals(clauseNode, buf[])</code></li>
+      <li><code>extractClauses(cnfRoot, outClauses[])</code></li>
+      <li><code>isValidCNF(cnfRoot)</code></li>
+    </ul>
+    <p>Interactions: CNF transforms feed treeToDIMACS; validity checks prune before export.</p>
+  </details>
+</section>
+
+<section>
+  <h2>DIMACS Pipeline</h2>
+  <details>
+    <summary>DIMACS Functions</summary>
+    <ul>
+      <li><code>getIntVar(charVar) / getCharVar(intVar)</code></li>
+      <li><code>treeToDIMACS(cnfRoot)</code> → DIMACSFormula*</li>
+      <li><code>saveDIMACS(formula, path)</code></li>
+      <li><code>readDIMACS(path)</code> → DIMACSFormula*</li>
+      <li><code>evaluateDIMACS(formula, assignments[])</code></li>
+      <li><code>freeDIMACS(formula)</code></li>
+    </ul>
+    <p>Interactions: treeToDIMACS strictly requires CNF-shaped Node; evaluateDIMACS uses integer-based assignments.</p>
+  </details>
+</section>
+
+<section>
+  <h2>End-to-End Call Sequences</h2>
+  <ul>
+    <li>Infix evaluation: buildParseTree → collectVariables → evaluateFormula → freeTree</li>
+    <li>Infix → Prefix: buildParseTree → treeToPrefix → freeTree</li>
+    <li>CNF + DIMACS export: buildParseTree → convertToCNF → treeToDIMACS → saveDIMACS → freeDIMACS → freeTree</li>
+    <li>DIMACS SAT evaluation: readDIMACS → evaluateDIMACS → freeDIMACS</li>
+    <li>CNF validity screen: buildParseTree → convertToCNF → isValidCNF → freeTree</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Ownership & Lifetime Rules</h2>
+  <ul>
+    <li>Every <code>createNode</code> / <code>cloneTree</code> result must be freed with <code>freeTree</code>.</li>
+    <li>convertToCNF may return a new tree; if original preserved, free both.</li>
+    <li>treeToDIMACS allocates DIMACSFormula; free with <code>freeDIMACS</code>.</li>
+    <li>VarMapping is global/static; reset if per-run isolation is required.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Side Effects & State Notes</h2>
+  <ul>
+    <li>Global VarMapping is mutated by getIntVar; clear or namespace per session for reproducibility.</li>
+    <li>Parser index/cursor must be reset between parses.</li>
+    <li>Parsing and DIMACS reading should return NULL/error codes on malformed input.</li>
+  </ul>
+</section>
+
+<div class="note">
+  This map reflects current calling/data-flow relationships without proposing architectural changes. Ideal for navigating and extending the codebase safely.
+</div>
+
+</body>
+</html>
+
