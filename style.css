@@ -222,7 +222,7 @@ header p {
 
 
 .blog-card-header {
-    background: linear-gradient(135deg, #23283a 0%, #00ccff 100%);
+    background: linear-gradient(135deg, #23283a 0%, #f57e27 100%);
     color: #fff;
     padding: 20px;
     position: relative;
@@ -240,7 +240,7 @@ header p {
 
 .category-tag {
     display: inline-block;
-    background: #00ccff;
+    background: #d56c23;
     color: #333;
     padding: 5px 15px;
     border-radius: 20px;
@@ -260,20 +260,20 @@ header p {
 
 .blog-card-content {
     padding: 20px;
-    color: #333;
-    background: rgba(204, 255, 255, 0.8);
+    color: #fff;
+    background: rgb(38 15 5 / 80%);
 }
 
 .blog-card-content p {
-    color: #555;
+    color: #fff;
     margin-bottom: 15px;
 }
 
 .read-more {
     display: block;
     width: 100%;
-    background: linear-gradient(90deg, #00ccff 60%, #0099ff 100%);
-    color: #333;
+    background: linear-gradient(90deg, #a5602f 60%, #e97928 100%);
+    color: #fff;
     border: none;
     border-radius: 8px;
     padding: 12px 0;
