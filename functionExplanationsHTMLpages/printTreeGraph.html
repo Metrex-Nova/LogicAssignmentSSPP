@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        .code-line {
+            color: #d81b60;
+        }
+        .explanation {
+            color: #6a1b9a;
+            margin-left: 20px;
+        }
+        .critical-note {
+            background-color: #fff9c4;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffca28;
+        }
+    </style>
+</head>
+<body>
+    <h1>Preorder Tree Traversal - Line by Line Explanation</h1>
+
+    <pre>
+<span class="code-line">// Print tree level by level (root at top, indented for binary tree structure)</span>
+<span class="code-line">void printTreeRooted(Node *root, int level)</span>
+    </pre>
+    <p class="explanation">**Function Declaration:** This declares a function named <code>printTreeRooted</code> that takes a pointer to a <code>Node</code> structure named <code>root</code> and an integer <code>level</code> as parameters. The function returns <code>void</code> (no return value). The <code>root</code> parameter represents the current node being visited in the binary tree, and <code>level</code> indicates the depth or level of the node for indentation purposes.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the function body where all the logic is contained.</p>
+
+    <pre>
+<span class="code-line">if (root == NULL)</span>
+    </pre>
+    <p class="explanation">**Base Case Check:** This is the stopping condition for the recursion. It checks whether the current node pointer <code>root</code> is <code>NULL</code>, indicating that the node doesn’t exist. This happens when a leaf node’s children or an empty subtree is encountered.</p>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Base Case Return:** If <code>root</code> is <code>NULL</code>, the function terminates immediately, preventing further recursion and avoiding access to non-existent nodes.</p>
+
+    <pre>
+<span class="code-line">for (int i = 0; i < level; i++)</span>
+    </pre>
+    <p class="explanation">**Indentation Loop Initialization:** This starts a <code>for</code> loop with an integer variable <code>i</code> initialized to 0. The loop continues as long as <code>i</code> is less than <code>level</code>, incrementing <code>i</code> by 1 each iteration. This loop is used to print the appropriate number of spaces for indentation based on the node’s level in the tree.</p>
+
+    <pre>
+<span class="code-line">printf("    ");</span>
+    </pre>
+    <p class="explanation">**Print Indentation:** Inside the loop, this prints four spaces (<code>"    "</code>) for each iteration, creating an indentation that visually represents the tree’s hierarchical structure, with the root at the top and deeper levels indented further.</p>
+
+    <pre>
+<span class="code-line">printf("%c\n", root->value);</span>
+    </pre>
+    <p class="explanation">**Print Node Value:** This prints the value of the current node (<code>root->value</code>) as a character (using <code>%c</code>) followed by a newline (<code>\n</code>). This displays the node’s value at the correct indentation level, forming a level-by-level representation of the binary tree.</p>
+
+    <pre>
+<span class="code-line">printTreeRooted(root->left, level + 1);</span>
+    </pre>
+    <p class="explanation">**Recursive Left Subtree Call:** This recursively calls <code>printTreeRooted</code> on the left child of the current node (<code>root->left</code>), increasing the <code>level</code> by 1 to indent the left subtree one level deeper.</p>
+
+    <pre>
+<span class="code-line">printTreeRooted(root->right, level + 1);</span>
+    </pre>
+    <p class="explanation">**Recursive Right Subtree Call:** This recursively calls <code>printTreeRooted</code> on the right child of the current node (<code>root->right</code>), also increasing the <code>level</code> by 1 to indent the right subtree one level deeper.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>printTreeRooted</code> function body.</p>
+
+    <pre>
+<span class="code-line">// Print tree as graph with arrows</span>
+<span class="code-line">void printTreeGraph(Node *root)</span>
+    </pre>
+    <p class="explanation">**Function Declaration:** This declares a function named <code>printTreeGraph</code> that takes a pointer to a <code>Node</code> structure named <code>root</code> as its parameter. The function returns <code>void</code> (no return value). The <code>root</code> parameter represents the current node being visited in the tree for graphical representation.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the function body where all the logic is contained.</p>
+
+    <pre>
+<span class="code-line">if (root == NULL)</span>
+    </pre>
+    <p class="explanation">**Base Case Check:** This checks if the current node pointer <code>root</code> is <code>NULL</code>, indicating an empty node or the end of a subtree.</p>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Base Case Return:** If <code>root</code> is <code>NULL</code>, the function terminates immediately, preventing further processing of non-existent nodes.</p>
+
+    <pre>
+<span class="code-line">if (root->left)</span>
+    </pre>
+    <p class="explanation">**Left Child Existence Check:** This checks if the left child of the current node (<code>root->left</code>) exists (i.e., is not <code>NULL</code>). The implicit conversion of a pointer to a boolean checks for non-nullness.</p>
+
+    <pre>
+<span class="code-line">printf("%c --> %c\n", root->value, root->left->value);</span>
+    </pre>
+    <p class="explanation">**Print Left Edge:** If a left child exists, this prints the current node’s value (<code>root->value</code>) and the left child’s value (<code>root->left->value</code>) connected by <code>" --> "</code>, followed by a newline (<code>\n</code>). This represents a directed edge from the parent to the left child in the graph.</p>
+
+    <pre>
+<span class="code-line">printTreeGraph(root->left);</span>
+    </pre>
+    <p class="explanation">**Recursive Left Subtree Call:** This recursively calls <code>printTreeGraph</code> on the left child (<code>root->left</code>) to process all edges in the left subtree.</p>
+
+    <pre>
+<span class="code-line">if (root->right)</span>
+    </pre>
+    <p class="explanation">**Right Child Existence Check:** This checks if the right child of the current node (<code>root->right</code>) exists (i.e., is not <code>NULL</code>).</p>
+
+    <pre>
+<span class="code-line">printf("%c --> %c\n", root->value, root->right->value);</span>
+    </pre>
+    <p class="explanation">**Print Right Edge:** If a right child exists, this prints the current node’s value (<code>root->value</code>) and the right child’s value (<code>root->right->value</code>) connected by <code>" --> "</code>, followed by a newline (<code>\n</code>). This represents a directed edge from the parent to the right child.</p>
+
+    <pre>
+<span class="code-line">printTreeGraph(root->right);</span>
+    </pre>
+    <p class="explanation">**Recursive Right Subtree Call:** This recursively calls <code>printTreeGraph</code> on the right child (<code>root->right</code>) to process all edges in the right subtree.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>printTreeGraph</code> function body.</p>
+
+    <div class="critical-note">**[Why this is critical]: Without these checks, the program would crash with a segmentation fault when trying to access <code>NULL->value</code>.**</div>
+</body>
+</html>

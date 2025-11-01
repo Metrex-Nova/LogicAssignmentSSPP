@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        .code-line {
+            color: #d81b60;
+        }
+        .explanation {
+            color: #6a1b9a;
+            margin-left: 20px;
+        }
+        .critical-note {
+            background-color: #fff9c4;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffca28;
+        }
+    </style>
+</head>
+<body>
+    <h1>Preorder Tree Traversal - Line by Line Explanation</h1>
+
+    <pre>
+<span class="code-line">void printTreeRec(Node *node, char *connector, char *indent);</span>
+<span class="code-line">void printTreeAscii(Node *root)</span>
+    </pre>
+    <p class="explanation">**Function Declaration:** This declares two functions. The first function, <code>printTreeRec</code>, takes a pointer to a <code>Node</code> structure, a character pointer <code>connector</code>, and another character pointer <code>indent</code> as parameters. The second function, <code>printTreeAscii</code>, takes a pointer to a <code>Node</code> structure named <code>root</code> as its parameter. Both functions return <code>void</code> (no return value). The parameter <code>root</code> represents the current node being visited in the tree, while <code>node</code>, <code>connector</code>, and <code>indent</code> are used for recursive traversal and formatting.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the function body where all the logic is contained.</p>
+
+    <pre>
+<span class="code-line">if (root == NULL)</span>
+    </pre>
+    <p class="explanation">**Base Case Check:** This is the stopping condition for the recursion. It checks whether the current node pointer is <code>NULL</code> (i.e., the node doesn’t exist). This happens when:</p>
+    <ul class="explanation">
+        <li>We’ve reached a leaf node and try to visit its non-existent children</li>
+        <li>The tree itself is empty (<code>root</code> is <code>NULL</code> from the start)</li>
+    </ul>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Base Case Return:** If the <code>root</code> is <code>NULL</code>, the function terminates immediately, preventing further recursion. This avoids attempting to access non-existent nodes.</p>
+
+    <pre>
+<span class="code-line">printf("%c\n", root->value);</span>
+    </pre>
+    <p class="explanation">**Print Node Value:** This line prints the value of the current node (<code>root->value</code>) followed by a newline character (<code>\n</code>). The <code>%c</code> format specifier indicates that the value is a character. This step corresponds to the "visit" phase in a preorder traversal.</p>
+
+    <pre>
+<span class="code-line">printTreeRec(root->left, "|-- ", root->right != NULL ? "|   " : "    ");</span>
+    </pre>
+    <p class="explanation">**Recursive Left Subtree Call:** This recursively calls <code>printTreeRec</code> on the left child of the current node (<code>root->left</code>). The <code>connector</code> is set to <code>"|-- "</code> to indicate a branch with a left child. The <code>indent</code> is conditionally set to <code>"|   "</code> if the right child exists (<code>root->right != NULL</code>), or <code>"    "</code> if it doesn’t, to maintain proper ASCII tree formatting.</p>
+
+    <pre>
+<span class="code-line">printTreeRec(root->right, "`-- ", "    ");</span>
+    </pre>
+    <p class="explanation">**Recursive Right Subtree Call:** This recursively calls <code>printTreeRec</code> on the right child of the current node (<code>root->right</code>). The <code>connector</code> is set to <code>"`-- "</code> to indicate the end of a branch. The <code>indent</code> is set to <code>"    "</code> to align the right subtree properly in the ASCII representation.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>printTreeAscii</code> function body.</p>
+
+    <pre>
+<span class="code-line">void printTreeRec(Node *node, char *connector, char *indent)</span>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Function Declaration and Opening Brace:** This declares the recursive helper function <code>printTreeRec</code>, which takes a <code>Node</code> pointer <code>node</code>, a character pointer <code>connector</code>, and a character pointer <code>indent</code> as parameters. The opening brace marks the beginning of the function body where the recursive logic is contained.</p>
+
+    <pre>
+<span class="code-line">if (node == NULL)</span>
+    </pre>
+    <p class="explanation">**Base Case Check:** Similar to the base case in <code>printTreeAscii</code>, this checks if the current node pointer <code>node</code> is <code>NULL</code>, indicating the end of a subtree or an empty node.</p>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Base Case Return:** If <code>node</code> is <code>NULL</code>, the function terminates, preventing access to non-existent nodes.</p>
+
+    <pre>
+<span class="code-line">printf("%s%s%c\n", indent, connector, node->value);</span>
+    </pre>
+    <p class="explanation">**Print Node with Formatting:** This prints the current node’s value (<code>node->value</code>) with the specified <code>indent</code> and <code>connector</code>. The <code>%s</code> format specifier prints the <code>indent</code> and <code>connector</code> strings, while <code>%c</code> prints the node’s value as a character. The <code>\n</code> adds a newline. This formats the tree in an ASCII style, showing the hierarchical structure.</p>
+
+    <pre>
+<span class="code-line">char newIndent[100];</span>
+    </pre>
+    <p class="explanation">**New Indent Declaration:** Declares a character array <code>newIndent</code> of size 100 to store the updated indentation for the next level of recursion.</p>
+
+    <pre>
+<span class="code-line">strcpy(newIndent, indent);</span>
+    </pre>
+    <p class="explanation">**Copy Indent:** Copies the current <code>indent</code> string into <code>newIndent</code> to preserve the existing indentation level.</p>
+
+    <pre>
+<span class="code-line">if (node->left != NULL || node->right != NULL)</span>
+    </pre>
+    <p class="explanation">**Indent Condition Check:** This checks if the current node has at least one child (<code>left</code> or <code>right</code> is not <code>NULL</code>). If true, the indentation will include a vertical bar to indicate continuation of the tree.</p>
+
+    <pre>
+<span class="code-line">strcat(newIndent, "|   ");</span>
+    </pre>
+    <p class="explanation">**Update Indent with Vertical Bar:** Appends <code>"|   "</code> to <code>newIndent</code> to maintain a vertical line in the ASCII tree, indicating that more nodes follow below.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if the current node has no children (both <code>left</code> and <code>right</code> are <code>NULL</code>).</p>
+
+    <pre>
+<span class="code-line">strcat(newIndent, "    ");</span>
+    </pre>
+    <p class="explanation">**Update Indent with Spaces:** Appends <code>"    "</code> to <code>newIndent</code> to add spacing without a vertical bar, indicating the end of a branch.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Ends the <code>if-else</code> block for updating the indentation.</p>
+
+    <pre>
+<span class="code-line">printTreeRec(node->left, "|-- ", newIndent);</span>
+    </pre>
+    <p class="explanation">**Recursive Left Subtree Call:** Recursively calls <code>printTreeRec</code> on the left child (<code>node->left</code>) with the <code>connector</code> set to <code>"|-- "</code> and the updated <code>newIndent</code> for proper alignment.</p>
+
+    <pre>
+<span class="code-line">printTreeRec(node->right, "`-- ", newIndent);</span>
+    </pre>
+    <p class="explanation">**Recursive Right Subtree Call:** Recursively calls <code>printTreeRec</code> on the right child (<code>node->right</code>) with the <code>connector</code> set to <code>"`-- "</code> and the same <code>newIndent</code> for alignment.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>printTreeRec</code> function body.</p>
+
+    <div class="critical-note">**[Why this is critical]: Without these checks, the program would crash with a segmentation fault when trying to access <code>NULL->value</code>.**</div>
+</body>
+</html>

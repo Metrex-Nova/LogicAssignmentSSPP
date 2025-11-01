@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        .code-line {
+            color: #d81b60;
+        }
+        .explanation {
+            color: #6a1b9a;
+            margin-left: 20px;
+        }
+        .critical-note {
+            background-color: #fff9c4;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffca28;
+        }
+    </style>
+</head>
+<body>
+    <h1>Preorder Tree Traversal - Line by Line Explanation</h1>
+
+    <pre>
+<span class="code-line">// Menu-driven main function</span>
+<span class="code-line">int main()</span>
+    </pre>
+    <p class="explanation">**Function Declaration:** This declares the main function <code>main</code> with a return type of <code>int</code>, serving as the entry point of the program. It provides a menu-driven interface for propositional logic parsing and DIMACS format operations.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the <code>main</code> function body where all the program logic is contained.</p>
+
+    <pre>
+<span class="code-line">char formula[200];</span>
+<span class="code-line">char prefix[200];</span>
+<span class="code-line">char filename[100];</span>
+<span class="code-line">int choice = -1;</span>
+<span class="code-line">Node *tree = NULL;</span>
+<span class="code-line">DIMACSFormula *dimacsFormula = NULL;</span>
+    </pre>
+    <p class="explanation">**Variable Declarations:** 
+    - <code>formula[200]</code>: A character array to store the infix formula input by the user, with a maximum size of 200 characters.
+    - <code>prefix[200]</code>: A character array to store the converted prefix notation, also with a maximum size of 200 characters.
+    - <code>filename[100]</code>: A character array to store the filename for saving or loading DIMACS files, with a maximum size of 100 characters.
+    - <code>choice = -1</code>: An integer to store the user’s menu selection, initialized to -1 as a default invalid value.
+    - <code>tree = NULL</code>: A pointer to a <code>Node</code> structure initialized to <code>NULL</code>, representing the parse tree.
+    - <code>dimacsFormula = NULL</code>: A pointer to a <code>DIMACSFormula</code> structure initialized to <code>NULL</code>, representing the DIMACS format data.</p>
+
+    <pre>
+<span class="code-line">printf("=============================================\n");</span>
+<span class="code-line">printf("  Propositional Logic Parser with DIMACS\n");</span>
+<span class="code-line">printf("=============================================\n");</span>
+<span class="code-line">printf("Operators: ~ (NOT), + (OR), * (AND), > (IMPLICATION)\n\n");</span>
+    </pre>
+    <p class="explanation">**Program Header:** These <code>printf</code> statements display a formatted header and information about the program. They print a border, the program title, and a list of supported operators (<code>~</code> for NOT, <code>+</code> for OR, <code>*</code> for AND, <code>></code> for IMPLICATION) to guide the user.</p>
+
+    <pre>
+<span class="code-line">while (1)</span>
+    </pre>
+    <p class="explanation">**Infinite Loop:** This starts an infinite <code>while</code> loop (condition <code>1</code> is always true), ensuring the menu is displayed repeatedly until the user chooses to exit.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the <code>while</code> loop body where the menu and its options are processed.</p>
+
+    <pre>
+<span class="code-line">printf("\n=== MENU ===\n");</span>
+    </pre>
+    <p class="explanation">**Menu Header:** Prints a newline and the menu title <code>=== MENU ===</code> to separate it from previous output.</p>
+
+    <pre>
+<span class="code-line">printf("1.  Convert Infix to Prefix\n");</span>
+<span class="code-line">printf("2.  Build Tree from Prefix\n");</span>
+<span class="code-line">printf("3.  Display Infix (In-order Traversal)\n");</span>
+<span class="code-line">printf("4.  Calculate Tree Height\n");</span>
+<span class="code-line">printf("5.  Evaluate Formula\n");</span>
+<span class="code-line">printf("6.  Convert to CNF\n");</span>
+<span class="code-line">printf("7.  Check Validity of CNF\n");</span>
+<span class="code-line">printf("8.  Convert CNF to DIMACS Format\n");</span>
+<span class="code-line">printf("9.  Save DIMACS to File\n");</span>
+<span class="code-line">printf("10. Load DIMACS from File\n");</span>
+<span class="code-line">printf("11. Display DIMACS Formula\n");</span>
+<span class="code-line">printf("12. Evaluate DIMACS Formula\n");</span>
+<span class="code-line">printf("13. Show Variable Mapping\n");</span>
+<span class="code-line">printf("14. Run Demo\n");</span>
+<span class="code-line">printf("15. Display Parse Tree from Infix\n");</span>
+<span class="code-line">printf("0.  Exit\n");</span>
+<span class="code-line">printf("Choice: ");</span>
+<span class="code-line">scanf("%d", &choice);</span>
+<span class="code-line">getchar();</span>
+    </pre>
+    <p class="explanation">**Menu Options and Input:** 
+    - Prints numbered options from 0 to 15, each representing a different operation (e.g., converting infix to prefix, building a tree, etc.).
+    - Prompts the user to enter a choice with <code>printf("Choice: ")</code>.
+    - <code>scanf("%d", &choice)</code> reads an integer input into the <code>choice</code> variable.
+    - <code>getchar()</code> consumes the newline character left in the input buffer after <code>scanf</code> to prevent issues with subsequent input.</p>
+
+    <pre>
+<span class="code-line">switch (choice)</span>
+    </pre>
+    <p class="explanation">**Switch Statement:** Begins a <code>switch</code> block to handle the user’s choice, executing the corresponding case based on the value of <code>choice</code>.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the <code>switch</code> block body.</p>
+
+    <pre>
+<span class="code-line">case 1:</span>
+    </pre>
+    <p class="explanation">**Case 1: Convert Infix to Prefix:** Executes when the user selects option 1.</p>
+
+    <pre>
+<span class="code-line">printf("Enter infix formula (fully parenthesized): ");</span>
+<span class="code-line">fgets(formula, sizeof(formula), stdin);</span>
+<span class="code-line">formula[strcspn(formula, "\n")] = 0;</span>
+    </pre>
+    <p class="explanation">**Input Infix Formula:** 
+    - Prompts the user to enter a fully parenthesized infix formula.
+    - <code>fgets(formula, sizeof(formula), stdin)</code> reads the input into the <code>formula</code> array, limited by its size.
+    - <code>formula[strcspn(formula, "\n")] = 0</code> replaces the newline character with a null terminator to clean the string.</p>
+
+    <pre>
+<span class="code-line">infixToPrefix(formula, prefix);</span>
+<span class="code-line">printf("Prefix: %s\n", prefix);</span>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Convert and Display:** 
+    - Calls <code>infixToPrefix</code> to convert the infix formula to prefix notation, storing the result in <code>prefix</code>.
+    - Prints the resulting prefix notation.
+    - <code>break</code> exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 2:</span>
+    </pre>
+    <p class="explanation">**Case 2: Build Tree from Prefix:** Executes when the user selects option 2.</p>
+
+    <pre>
+<span class="code-line">printf("Enter prefix formula: ");</span>
+<span class="code-line">fgets(prefix, sizeof(prefix), stdin);</span>
+<span class="code-line">prefix[strcspn(prefix, "\n")] = 0;</span>
+    </pre>
+    <p class="explanation">**Input Prefix Formula:** 
+    - Prompts the user to enter a prefix formula.
+    - <code>fgets</code> reads the input into <code>prefix</code>.
+    - Removes the newline character from <code>prefix</code>.</p>
+
+    <pre>
+<span class="code-line">if (tree != NULL)</span>
+<span class="code-line">freeTree(tree);</span>
+    </pre>
+    <p class="explanation">**Free Existing Tree:** If <code>tree</code> is not <code>NULL</code> (indicating an existing tree), calls <code>freeTree</code> to deallocate the memory to prevent memory leaks.</p>
+
+    <pre>
+<span class="code-line">tree = buildTreeFromPrefix(prefix);</span>
+<span class="code-line">printf("Parse tree built successfully!\n");</span>
+<span class="code-line">printf("Tree structure (pyramid shape):\n");</span>
+<span class="code-line">printTreeAscii(tree);</span>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Build and Display Tree:** 
+    - Calls <code>buildTreeFromPrefix</code> to create a parse tree from the prefix formula, storing it in <code>tree</code>.
+    - Prints a success message and the tree structure using <code>printTreeAscii</code> in pyramid shape.
+    - <code>break</code> exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 3:</span>
+    </pre>
+    <p class="explanation">**Case 3: Display Infix (In-order Traversal):** Executes when the user selects option 3.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>, indicating no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** If no tree is loaded, prints an error message instructing the user to use option 2.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">printf("Infix expression: ");</span>
+<span class="code-line">inorderTraversal(tree);</span>
+<span class="code-line">printf("\n");</span>
+    </pre>
+    <p class="explanation">**Display Infix:** Prints the infix expression by calling <code>inorderTraversal</code> on the tree, followed by a newline.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 4:</span>
+    </pre>
+    <p class="explanation">**Case 4: Calculate Tree Height:** Executes when the user selects option 4.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">printf("Tree height: %d\n", calculateHeight(tree));</span>
+    </pre>
+    <p class="explanation">**Calculate and Display Height:** Calls <code>calculateHeight</code> to determine the tree’s height and prints the result.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 5:</span>
+    </pre>
+    <p class="explanation">**Case 5: Evaluate Formula:** Executes when the user selects option 5.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">char vars[26];</span>
+<span class="code-line">int varCount = 0;</span>
+<span class="code-line">collectVariables(tree, vars, &varCount);</span>
+    </pre>
+    <p class="explanation">**Variable Collection:** 
+    - Declares a <code>vars</code> array of 26 characters to store unique variables.
+    - Initializes <code>varCount</code> to 0 to track the number of variables.
+    - Calls <code>collectVariables</code> to populate <code>vars</code> and update <code>varCount</code>.</p>
+
+    <pre>
+<span class="code-line">TruthAssignment assignments[26];</span>
+<span class="code-line">printf("Detected %d variable(s): ", varCount);</span>
+<span class="code-line">for (int i = 0; i < varCount; i++)</span>
+    </pre>
+    <p class="explanation">**Assignment Setup:** 
+    - Declares an array <code>assignments</code> of 26 <code>TruthAssignment</code> structures to store variable assignments.
+    - Prints the number of detected variables.
+    - Starts a loop to display each variable.</p>
+
+    <pre>
+<span class="code-line">printf("%c ", vars[i]);</span>
+    </pre>
+    <p class="explanation">**Display Variables:** Prints each variable from the <code>vars</code> array followed by a space.</p>
+
+    <pre>
+<span class="code-line">printf("\n");</span>
+<span class="code-line">for (int i = 0; i < varCount; i++)</span>
+    </pre>
+    <p class="explanation">**Newline and Input Loop:** Prints a newline and starts a loop to input truth values.</p>
+
+    <pre>
+<span class="code-line">assignments[i].variable = vars[i];</span>
+<span class="code-line">printf("Truth value for %c (0/1): ", vars[i]);</span>
+<span class="code-line">scanf("%d", &assignments[i].value);</span>
+    </pre>
+    <p class="explanation">**Assign Values:** 
+    - Sets the variable name in the <code>assignments</code> array.
+    - Prompts for and reads a truth value (0 or 1) for each variable.</p>
+
+    <pre>
+<span class="code-line">int result = evaluateFormula(tree, assignments, varCount);</span>
+<span class="code-line">printf("Formula evaluates to: %s\n", result ? "TRUE" : "FALSE");</span>
+    </pre>
+    <p class="explanation">**Evaluate and Display:** 
+    - Calls <code>evaluateFormula</code> to compute the formula’s truth value.
+    - Prints the result as "TRUE" or "FALSE" based on the integer <code>result</code>.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 6:</span>
+    </pre>
+    <p class="explanation">**Case 6: Convert to CNF:** Executes when the user selects option 6.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">Node *cnfTree = convertToCNF(cloneTree(tree));</span>
+<span class="code-line">printf("CNF form: ");</span>
+<span class="code-line">inorderTraversal(cnfTree);</span>
+<span class="code-line">printf("\n");</span>
+    </pre>
+    <p class="explanation">**Convert to CNF:** 
+    - Calls <code>cloneTree</code> to create a copy of the tree and <code>convertToCNF</code> to convert it to Conjunctive Normal Form (CNF), storing the result in <code>cnfTree</code>.
+    - Prints the CNF form using <code>inorderTraversal</code>.</p>
+
+    <pre>
+<span class="code-line">printf("Store as current tree? (y/n): ");</span>
+<span class="code-line">char ch;</span>
+<span class="code-line">scanf(" %c", &ch);</span>
+    </pre>
+    <p class="explanation">**User Confirmation:** 
+    - Prompts the user to decide whether to update the current tree.
+    - Declares <code>ch</code> to store the user’s response and reads it with <code>scanf</code> (with a space to consume the newline).</p>
+
+    <pre>
+<span class="code-line">if (ch == 'y' || ch == 'Y')</span>
+    </pre>
+    <p class="explanation">**If Yes:** Executes if the user enters 'y' or 'Y'.</p>
+
+    <pre>
+<span class="code-line">freeTree(tree);</span>
+<span class="code-line">tree = cnfTree;</span>
+    </pre>
+    <p class="explanation">**Update Tree:** Frees the old tree and assigns the CNF tree to <code>tree</code>.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if the user does not enter 'y' or 'Y'.</p>
+
+    <pre>
+<span class="code-line">freeTree(cnfTree);</span>
+    </pre>
+    <p class="explanation">**Free CNF Tree:** Deallocates the CNF tree memory if not stored.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 7:</span>
+    </pre>
+    <p class="explanation">**Case 7: Check Validity of CNF:** Executes when the user selects option 7.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">Node *cnfTree = convertToCNF(cloneTree(tree));</span>
+<span class="code-line">bool valid = isValidCNF(cnfTree);</span>
+<span class="code-line">printf("Formula is %s\n", valid ? "VALID" : "NOT VALID (or cannot determine)");</span>
+<span class="code-line">freeTree(cnfTree);</span>
+    </pre>
+    <p class="explanation">**Check Validity:** 
+    - Converts the tree to CNF and checks its validity with <code>isValidCNF</code>.
+    - Prints the result ("VALID" or "NOT VALID").
+    - Frees the temporary CNF tree.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 8:</span>
+    </pre>
+    <p class="explanation">**Case 8: Convert CNF to DIMACS Format:** Executes when the user selects option 8.</p>
+
+    <pre>
+<span class="code-line">if (tree == NULL)</span>
+    </pre>
+    <p class="explanation">**Check Tree Existence:** Checks if <code>tree</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No tree loaded. Use option 2 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no tree is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a tree is loaded.</p>
+
+    <pre>
+<span class="code-line">Node *cnfTree = convertToCNF(cloneTree(tree));</span>
+    </pre>
+    <p class="explanation">**Convert to CNF:** Creates a CNF version of the tree.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula != NULL)</span>
+    </pre>
+    <p class="explanation">**Check DIMACS Existence:** Checks if <code>dimacsFormula</code> is not <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">freeDIMACS(dimacsFormula);</span>
+    </pre>
+    <p class="explanation">**Free Existing DIMACS:** Frees the previous DIMACS formula to avoid memory leaks.</p>
+
+    <pre>
+<span class="code-line">dimacsFormula = treeToDIMACS(cnfTree);</span>
+<span class="code-line">printf("\nDIMACS Format:\n");</span>
+<span class="code-line">printDIMACS(dimacsFormula);</span>
+<span class="code-line">printVarMapping();</span>
+    </pre>
+    <p class="explanation">**Convert and Display:** 
+    - Converts the CNF tree to DIMACS format and stores it in <code>dimacsFormula</code>.
+    - Prints the DIMACS format and variable mapping.</p>
+
+    <pre>
+<span class="code-line">freeTree(cnfTree);</span>
+    </pre>
+    <p class="explanation">**Free CNF Tree:** Deallocates the temporary CNF tree.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 9:</span>
+    </pre>
+    <p class="explanation">**Case 9: Save DIMACS to File:** Executes when the user selects option 9.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula == NULL)</span>
+    </pre>
+    <p class="explanation">**Check DIMACS Existence:** Checks if <code>dimacsFormula</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No DIMACS formula available. Use option 8 first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no DIMACS formula is available.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a DIMACS formula exists.</p>
+
+    <pre>
+<span class="code-line">printf("Enter filename: ");</span>
+<span class="code-line">fgets(filename, sizeof(filename), stdin);</span>
+<span class="code-line">filename[strcspn(filename, "\n")] = 0;</span>
+    </pre>
+    <p class="explanation">**Input Filename:** Prompts for and reads a filename, removing the newline.</p>
+
+    <pre>
+<span class="code-line">saveDIMACS(dimacsFormula, filename);</span>
+    </pre>
+    <p class="explanation">**Save File:** Calls <code>saveDIMACS</code> to write the DIMACS formula to the specified file.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 10:</span>
+    </pre>
+    <p class="explanation">**Case 10: Load DIMACS from File:** Executes when the user selects option 10.</p>
+
+    <pre>
+<span class="code-line">printf("Enter filename: ");</span>
+<span class="code-line">fgets(filename, sizeof(filename), stdin);</span>
+<span class="code-line">filename[strcspn(filename, "\n")] = 0;</span>
+    </pre>
+    <p class="explanation">**Input Filename:** Prompts for and reads a filename, removing the newline.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula != NULL)</span>
+    </pre>
+    <p class="explanation">**Check DIMACS Existence:** Checks if <code>dimacsFormula</code> is not <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">freeDIMACS(dimacsFormula);</span>
+    </pre>
+    <p class="explanation">**Free Existing DIMACS:** Frees the previous DIMACS formula.</p>
+
+    <pre>
+<span class="code-line">dimacsFormula = readDIMACS(filename);</span>
+    </pre>
+    <p class="explanation">**Load DIMACS:** Calls <code>readDIMACS</code> to load the DIMACS formula from the file into <code>dimacsFormula</code>.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 11:</span>
+    </pre>
+    <p class="explanation">**Case 11: Display DIMACS Formula:** Executes when the user selects option 11.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula == NULL)</span>
+    </pre>
+    <p class="explanation">**Check DIMACS Existence:** Checks if <code>dimacsFormula</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No DIMACS formula loaded.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no DIMACS formula is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a DIMACS formula exists.</p>
+
+    <pre>
+<span class="code-line">printf("\nDIMACS Formula:\n");</span>
+<span class="code-line">printDIMACS(dimacsFormula);</span>
+    </pre>
+    <p class="explanation">**Display DIMACS:** Prints the DIMACS formula using <code>printDIMACS</code>.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 12:</span>
+    </pre>
+    <p class="explanation">**Case 12: Evaluate DIMACS Formula:** Executes when the user selects option 12.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula == NULL)</span>
+    </pre>
+    <p class="explanation">**Check DIMACS Existence:** Checks if <code>dimacsFormula</code> is <code>NULL</code>.</p>
+
+    <pre>
+<span class="code-line">printf("No DIMACS formula loaded.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no DIMACS formula is loaded.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a DIMACS formula exists.</p>
+
+    <pre>
+<span class="code-line">int *assignment = (int *)calloc(dimacsFormula->numVars + 1, sizeof(int));</span>
+    </pre>
+    <p class="explanation">**Allocate Assignment Array:** Dynamically allocates an array for truth assignments, sized for the number of variables plus one, initialized to zero.</p>
+
+    <pre>
+<span class="code-line">printf("Do you want to assign values automatically? (y/n): ");</span>
+<span class="code-line">char autoAssign;</span>
+<span class="code-line">scanf(" %c", &autoAssign);</span>
+    </pre>
+    <p class="explanation">**Auto Assignment Prompt:** 
+    - Prompts the user to choose automatic assignment.
+    - Declares <code>autoAssign</code> and reads the response.</p>
+
+    <pre>
+<span class="code-line">if (autoAssign == 'y' || autoAssign == 'Y')</span>
+    </pre>
+    <p class="explanation">**If Yes:** Executes if the user enters 'y' or 'Y'.</p>
+
+    <pre>
+<span class="code-line">printf("Choose assignment method:\n");</span>
+<span class="code-line">printf("1. Assign all literals 0\n");</span>
+<span class="code-line">printf("2. Assign all literals 1\n");</span>
+<span class="code-line">printf("3. Assign even indexed literals 0 and rest 1\n");</span>
+<span class="code-line">printf("4. Assign odd indexed literals 0 and rest 1\n");</span>
+<span class="code-line">printf("Choice: ");</span>
+<span class="code-line">int assignChoice;</span>
+<span class="code-line">scanf("%d", &assignChoice);</span>
+    </pre>
+    <p class="explanation">**Assignment Method Selection:** 
+    - Displays assignment options.
+    - Declares <code>assignChoice</code> and reads the user’s choice.</p>
+
+    <pre>
+<span class="code-line">for (int i = 1; i <= dimacsFormula->numVars; i++)</span>
+    </pre>
+    <p class="explanation">**Assignment Loop:** Starts a loop to assign values based on the chosen method.</p>
+
+    <pre>
+<span class="code-line">if (assignChoice == 1)</span>
+    </pre>
+    <p class="explanation">**Case 1:** Executes if option 1 is chosen.</p>
+
+    <pre>
+<span class="code-line">assignment[i] = 0;</span>
+    </pre>
+    <p class="explanation">**Assign Zero:** Sets all assignments to 0.</p>
+
+    <pre>
+<span class="code-line">else if (assignChoice == 2)</span>
+    </pre>
+    <p class="explanation">**Case 2:** Executes if option 2 is chosen.</p>
+
+    <pre>
+<span class="code-line">assignment[i] = 1;</span>
+    </pre>
+    <p class="explanation">**Assign One:** Sets all assignments to 1.</p>
+
+    <pre>
+<span class="code-line">else if (assignChoice == 3)</span>
+    </pre>
+    <p class="explanation">**Case 3:** Executes if option 3 is chosen.</p>
+
+    <pre>
+<span class="code-line">assignment[i] = (i % 2 == 0) ? 0 : 1;</span>
+    </pre>
+    <p class="explanation">**Even/Odd Assignment:** Sets even indices to 0 and odd to 1.</p>
+
+    <pre>
+<span class="code-line">else if (assignChoice == 4)</span>
+    </pre>
+    <p class="explanation">**Case 4:** Executes if option 4 is chosen.</p>
+
+    <pre>
+<span class="code-line">assignment[i] = (i % 2 == 1) ? 0 : 1;</span>
+    </pre>
+    <p class="explanation">**Odd/Even Assignment:** Sets odd indices to 0 and even to 1.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Default Case:** Executes if an invalid choice is made.</p>
+
+    <pre>
+<span class="code-line">printf("Invalid choice, assigning 0.\n");</span>
+<span class="code-line">assignment[i] = 0;</span>
+    </pre>
+    <p class="explanation">**Default Assignment:** Prints an error and sets all to 0.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause (Manual Assignment):** Executes if the user does not choose automatic assignment.</p>
+
+    <pre>
+<span class="code-line">printf("Enter truth assignments (0/1) for %d variables:\n", dimacsFormula->numVars);</span>
+<span class="code-line">for (int i = 1; i <= dimacsFormula->numVars; i++)</span>
+    </pre>
+    <p class="explanation">**Manual Input Prompt:** 
+    - Prompts for manual assignment of all variables.
+    - Starts a loop to input each value.</p>
+
+    <pre>
+<span class="code-line">printf("Variable %d: ", i);</span>
+<span class="code-line">scanf("%d", &assignment[i]);</span>
+    </pre>
+    <p class="explanation">**Input Assignment:** Prompts for and reads a value for each variable index.</p>
+
+    <pre>
+<span class="code-line">bool result = evaluateDIMACS(dimacsFormula, assignment);</span>
+<span class="code-line">printf("Formula evaluates to: %s\n", result ? "TRUE (SAT)" : "FALSE (UNSAT)");</span>
+    </pre>
+    <p class="explanation">**Evaluate and Display:** 
+    - Calls <code>evaluateDIMACS</code> to compute the result.
+    - Prints "TRUE (SAT)" or "FALSE (UNSAT)".</p>
+
+    <pre>
+<span class="code-line">free(assignment);</span>
+    </pre>
+    <p class="explanation">**Free Memory:** Deallocates the dynamically allocated assignment array.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 13:</span>
+    </pre>
+    <p class="explanation">**Case 13: Show Variable Mapping:** Executes when the user selects option 13.</p>
+
+    <pre>
+<span class="code-line">if (varMapSize == 0)</span>
+    </pre>
+    <p class="explanation">**Check Mapping Existence:** Checks if <code>varMapSize</code> is 0, indicating no mapping.</p>
+
+    <pre>
+<span class="code-line">printf("No variable mapping available. Convert to DIMACS first.\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error if no mapping exists.</p>
+
+    <pre>
+<span class="code-line">else</span>
+    </pre>
+    <p class="explanation">**Else Clause:** Executes if a mapping exists.</p>
+
+    <pre>
+<span class="code-line">printVarMapping();</span>
+    </pre>
+    <p class="explanation">**Display Mapping:** Calls <code>printVarMapping</code> to display the variable mapping.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 14:</span>
+    </pre>
+    <p class="explanation">**Case 14: Run Demo:** Executes when the user selects option 14.</p>
+
+    <pre>
+<span class="code-line">printf("\n=== DEMO: DIMACS Format ===\n\n");</span>
+    </pre>
+    <p class="explanation">**Demo Header:** Prints a header for the demo section.</p>
+
+    <pre>
+<span class="code-line">printf("Example 1: (p+q)\n");</span>
+<span class="code-line">strcpy(formula, "(p+q)");</span>
+<span class="code-line">index_pos = 0;</span>
+<span class="code-line">Node *demo1 = buildParseTree(formula);</span>
+<span class="code-line">printf("  Original: ");</span>
+<span class="code-line">inorderTraversal(demo1);</span>
+<span class="code-line">printf("\n");</span>
+    </pre>
+    <p class="explanation">**Example 1:** 
+    - Sets up and parses "(p+q)".
+    - Builds and displays the original tree.</p>
+
+    <pre>
+<span class="code-line">DIMACSFormula *dimacs1 = treeToDIMACS(demo1);</span>
+<span class="code-line">printf("  DIMACS:\n");</span>
+<span class="code-line">printDIMACS(dimacs1);</span>
+<span class="code-line">printVarMapping();</span>
+<span class="code-line">freeDIMACS(dimacs1);</span>
+<span class="code-line">freeTree(demo1);</span>
+<span class="code-line">varMapSize = 0;</span>
+    </pre>
+    <p class="explanation">**Convert and Cleanup:** 
+    - Converts to DIMACS and displays it.
+    - Frees resources and resets mapping.</p>
+
+    <pre>
+<span class="code-line">printf("\nExample 2: ((p>q)*(~r))\n");</span>
+<span class="code-line">strcpy(formula, "((p>q)*(~r))");</span>
+<span class="code-line">index_pos = 0;</span>
+<span class="code-line">Node *demo2 = buildParseTree(formula);</span>
+<span class="code-line">printf("  Original: ");</span>
+<span class="code-line">inorderTraversal(demo2);</span>
+<span class="code-line">printf("\n");</span>
+    </pre>
+    <p class="explanation">**Example 2:** Sets up and parses "((p>q)*(~r))", displaying the original.</p>
+
+    <pre>
+<span class="code-line">Node *cnf2 = convertToCNF(cloneTree(demo2));</span>
+<span class="code-line">printf("  CNF: ");</span>
+<span class="code-line">inorderTraversal(cnf2);</span>
+<span class="code-line">printf("\n");</span>
+    </pre>
+    <p class="explanation">**Convert to CNF:** Converts and displays the CNF form.</p>
+
+    <pre>
+<span class="code-line">DIMACSFormula *dimacs2 = treeToDIMACS(cnf2);</span>
+<span class="code-line">printf("  DIMACS:\n");</span>
+<span class="code-line">printDIMACS(dimacs2);</span>
+<span class="code-line">printVarMapping();</span>
+<span class="code-line">freeDIMACS(dimacs2);</span>
+<span class="code-line">freeTree(cnf2);</span>
+<span class="code-line">freeTree(demo2);</span>
+<span class="code-line">varMapSize = 0;</span>
+    </pre>
+    <p class="explanation">**Convert and Cleanup:** Converts to DIMACS, displays it, and frees resources.</p>
+
+    <pre>
+<span class="code-line">printf("\nExample 3: SAT 2002 Compatible\n");</span>
+<span class="code-line">printf("Creating a sample DIMACS file...\n");</span>
+    </pre>
+    <p class="explanation">**Example 3 Header:** Introduces the SAT 2002 compatible example.</p>
+
+    <pre>
+<span class="code-line">strcpy(formula, "((p+q)*(~p+r))");</span>
+<span class="code-line">index_pos = 0;</span>
+<span class="code-line">Node *demo3 = buildParseTree(formula);</span>
+<span class="code-line">Node *cnf3 = convertToCNF(cloneTree(demo3));</span>
+    </pre>
+    <p class="explanation">**Setup Example 3:** Parses and converts "((p+q)*(~p+r))" to CNF.</p>
+
+    <pre>
+<span class="code-line">DIMACSFormula *dimacs3 = treeToDIMACS(cnf3);</span>
+<span class="code-line">saveDIMACS(dimacs3, "sample.cnf");</span>
+    </pre>
+    <p class="explanation">**Save DIMACS:** Converts to DIMACS and saves it to "sample.cnf".</p>
+
+    <pre>
+<span class="code-line">printf("\nNow reading it back:\n");</span>
+<span class="code-line">DIMACSFormula *loaded = readDIMACS("sample.cnf");</span>
+<span class="code-line">if (loaded != NULL)</span>
+    </pre>
+    <p class="explanation">**Read Back:** Reads the file back and checks if successful.</p>
+
+    <pre>
+<span class="code-line">printDIMACS(loaded);</span>
+<span class="code-line">freeDIMACS(loaded);</span>
+    </pre>
+    <p class="explanation">**Display and Free:** Displays the loaded DIMACS and frees it.</p>
+
+    <pre>
+<span class="code-line">freeDIMACS(dimacs3);</span>
+<span class="code-line">freeTree(cnf3);</span>
+<span class="code-line">freeTree(demo3);</span>
+<span class="code-line">varMapSize = 0;</span>
+    </pre>
+    <p class="explanation">**Cleanup:** Frees all allocated resources and resets mapping.</p>
+
+    <pre>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Break:** Exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 15:</span>
+    </pre>
+    <p class="explanation">**Case 15: Display Parse Tree from Infix:** Executes when the user selects option 15.</p>
+
+    <pre>
+<span class="code-line">printf("Enter infix formula (fully parenthesized): ");</span>
+<span class="code-line">fgets(formula, sizeof(formula), stdin);</span>
+<span class="code-line">formula[strcspn(formula, "\n")] = 0;</span>
+    </pre>
+    <p class="explanation">**Input Infix Formula:** Prompts for and reads an infix formula, removing the newline.</p>
+
+    <pre>
+<span class="code-line">if (tree != NULL)</span>
+<span class="code-line">freeTree(tree);</span>
+    </pre>
+    <p class="explanation">**Free Existing Tree:** Frees the existing tree if it exists.</p>
+
+    <pre>
+<span class="code-line">tree = buildParseTree(formula);</span>
+<span class="code-line">printf("Parse tree built successfully!\n");</span>
+<span class="code-line">printf("Tree structure (directory like):\n");</span>
+<span class="code-line">printTreeAscii(tree);</span>
+<span class="code-line">break;</span>
+    </pre>
+    <p class="explanation">**Build and Display Tree:** 
+    - Builds a parse tree from the infix formula.
+    - Prints a success message and the tree structure.
+    - <code>break</code> exits the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">case 0:</span>
+    </pre>
+    <p class="explanation">**Case 0: Exit:** Executes when the user selects option 0.</p>
+
+    <pre>
+<span class="code-line">if (tree != NULL)</span>
+<span class="code-line">freeTree(tree);</span>
+    </pre>
+    <p class="explanation">**Free Tree:** Frees the parse tree if it exists.</p>
+
+    <pre>
+<span class="code-line">if (dimacsFormula != NULL)</span>
+<span class="code-line">freeDIMACS(dimacsFormula);</span>
+    </pre>
+    <p class="explanation">**Free DIMACS:** Frees the DIMACS formula if it exists.</p>
+
+    <pre>
+<span class="code-line">printf("Exiting...\n");</span>
+<span class="code-line">return 0;</span>
+    </pre>
+    <p class="explanation">**Exit Program:** Prints an exit message and returns 0 to terminate the program.</p>
+
+    <pre>
+<span class="code-line">default:</span>
+    </pre>
+    <p class="explanation">**Default Case:** Executes for any invalid choice.</p>
+
+    <pre>
+<span class="code-line">printf("Invalid choice!\n");</span>
+    </pre>
+    <p class="explanation">**Error Message:** Prints an error for invalid input.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>switch</code> block.</p>
+
+    <pre>
+<span class="code-line">return 0;</span>
+    </pre>
+    <p class="explanation">**Main Return:** Returns 0 to indicate successful program termination (unreachable due to the infinite loop, but included for completeness).</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>main</code> function body.</p>
+
+    <div class="critical-note">**[Why this is critical]: Without these checks, the program would crash with a segmentation fault when trying to access <code>NULL</code> pointers or uninitialized memory.**</div>
+</body>
+</html>
