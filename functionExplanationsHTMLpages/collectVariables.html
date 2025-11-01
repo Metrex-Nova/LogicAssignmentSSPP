@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        .code-line {
+            color: #d81b60;
+        }
+        .explanation {
+            color: #6a1b9a;
+            margin-left: 20px;
+        }
+        .critical-note {
+            background-color: #fff9c4;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #ffca28;
+        }
+    </style>
+</head>
+<body>
+    <h1>Preorder Tree Traversal - Line by Line Explanation</h1>
+
+    <pre>
+<span class="code-line">// Collect unique variables from the tree</span>
+<span class="code-line">void collectVariables(Node *root, char *vars, int *count)</span>
+    </pre>
+    <p class="explanation">**Function Declaration:** This declares a function named <code>collectVariables</code> that takes a pointer to a <code>Node</code> structure named <code>root</code>, a character pointer <code>vars</code>, and a pointer to an integer <code>count</code> as parameters. The function returns <code>void</code> (no return value). The <code>root</code> parameter represents the current node in the tree, <code>vars</code> is an array to store unique variable characters, and <code>count</code> tracks the number of unique variables collected.</p>
+
+    <pre>
+<span class="code-line">{</span>
+    </pre>
+    <p class="explanation">**Opening Brace:** Marks the beginning of the function body where all the logic is contained.</p>
+
+    <pre>
+<span class="code-line">if (root == NULL)</span>
+    </pre>
+    <p class="explanation">**Base Case Check:** This is the stopping condition for the recursion. It checks whether the current node pointer <code>root</code> is <code>NULL</code>, indicating that the node doesn’t exist or a leaf node’s children are being processed.</p>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Base Case Return:** If <code>root</code> is <code>NULL</code>, the function terminates immediately, preventing further recursion and avoiding access to non-existent nodes.</p>
+
+    <pre>
+<span class="code-line">if (!isOperator(root->value))</span>
+    </pre>
+    <p class="explanation">**Operator Check:** This checks if the current node’s value (<code>root->value</code>) is not an operator by calling the <code>isOperator</code> function (assumed to return a boolean). If <code>false</code>, the value is considered a variable, and the logic to collect it proceeds.</p>
+
+    <pre>
+<span class="code-line">for (int i = 0; i < *count; i++)</span>
+    </pre>
+    <p class="explanation">**Duplicate Check Loop Initialization:** This starts a <code>for</code> loop with an integer variable <code>i</code> initialized to 0. The loop continues as long as <code>i</code> is less than the value pointed to by <code>count</code>, incrementing <code>i</code> by 1 each iteration. This loop checks if the current node’s value already exists in the <code>vars</code> array.</p>
+
+    <pre>
+<span class="code-line">if (vars[i] == root->value)</span>
+    </pre>
+    <p class="explanation">**Duplicate Check:** This compares the value at index <code>i</code> in the <code>vars</code> array with the current node’s value (<code>root->value</code>). If they match, the value is a duplicate.</p>
+
+    <pre>
+<span class="code-line">return;</span>
+    </pre>
+    <p class="explanation">**Duplicate Return:** If a duplicate is found, the function returns immediately, skipping the addition of the current value to avoid redundancy in the <code>vars</code> array.</p>
+
+    <pre>
+<span class="code-line">vars[*count] = root->value;</span>
+    </pre>
+    <p class="explanation">**Add Unique Variable:** If no duplicate is found, this assigns the current node’s value (<code>root->value</code>) to the next available position in the <code>vars</code> array, indexed by the value pointed to by <code>count</code>.</p>
+
+    <pre>
+<span class="code-line">(*count)++;</span>
+    </pre>
+    <p class="explanation">**Increment Count:** This increments the value pointed to by <code>count</code> by 1, updating the count of unique variables stored in the <code>vars</code> array.</p>
+
+    <pre>
+<span class="code-line">collectVariables(root->left, vars, count);</span>
+    </pre>
+    <p class="explanation">**Recursive Left Subtree Call:** This recursively calls <code>collectVariables</code> on the left child of the current node (<code>root->left</code>), passing the same <code>vars</code> array and <code>count</code> pointer to continue collecting variables from the left subtree.</p>
+
+    <pre>
+<span class="code-line">collectVariables(root->right, vars, count);</span>
+    </pre>
+    <p class="explanation">**Recursive Right Subtree Call:** This recursively calls <code>collectVariables</code> on the right child of the current node (<code>root->right</code>), passing the same <code>vars</code> array and <code>count</code> pointer to continue collecting variables from the right subtree.</p>
+
+    <pre>
+<span class="code-line">}</span>
+    </pre>
+    <p class="explanation">**Closing Brace:** Marks the end of the <code>collectVariables</code> function body.</p>
+
+    <div class="critical-note">**[Why this is critical]: Without these checks, the program would crash with a segmentation fault when trying to access <code>NULL->value</code>.**</div>
+</body>
+</html>
