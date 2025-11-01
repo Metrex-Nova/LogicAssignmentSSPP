@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propositional Logic Parser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000000;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .operators-bar {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+        }
+
+        .operators-bar code {
+            background: #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: #a78bfa;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 200%;
+        }
+
+        .card h2 {
+            font-size: 2.4em;
+            margin-bottom: 20px;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .btn-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .output-box {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .output-box.success {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .output-box.error {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .output-box.info {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tree-visualization {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .eval-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .eval-input {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .eval-input label {
+            font-weight: 600;
+            color: #cbd5e1;
+            font-size: 0.9em;
+        }
+
+        .eval-input select {
+            padding: 10px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+
+        .eval-input select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .mapping-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #667eea;
+            font-weight: 600;
+        }
+
+        .examples {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+
+        .examples h3 {
+            margin-bottom: 15px;
+            color: #a78bfa;
+            font-size: 1.1em;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #e2e8f0;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #334155;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .divider {
+            height: 1px;
+            background: #334155;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Propositional Logic Parser</h1>
+            <p>Advanced Parser with CNF Conversion, DIMACS Support & Formula Evaluation</p>
+        </div>
+
+        <div class="operators-bar">
+            <strong>Operators:</strong> 
+            <code>~</code> NOT | 
+            <code>+</code> OR | 
+            <code>*</code> AND | 
+            <code>></code> IMPLICATION
+            <br><br>
+            <strong>Note:</strong> Formulas must be fully parenthesized (e.g., ((p+q)*r))
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div>
+                <div class="examples">
+                    <h3>📚 Quick Examples</h3>
+                    <button class="example-btn" onclick="loadExample('(p+q)')">Simple OR</button>
+                    <button class="example-btn" onclick="loadExample('(p*q)')">Simple AND</button>
+                    <button class="example-btn" onclick="loadExample('(~p)')">Negation</button>
+                    <button class="example-btn" onclick="loadExample('(p>q)')">Implication</button>
+                    <button class="example-btn" onclick="loadExample('((p+q)*r)')">Complex 1</button>
+                    <button class="example-btn" onclick="loadExample('((p>q)*(~r))')">Complex 2</button>
+                    <button class="example-btn" onclick="loadExample('(p+~p)')">Valid CNF</button>
+                </div>
+
+                <div class="card">
+                    <h2>📝 Build Parse Tree</h2>
+                    
+                    <div class="input-group">
+                        <label>Infix Formula:</label>
+                        <input type="text" id="infixInput" placeholder="e.g., ((p+q)*r)" value="((p+q)*r)">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="buildFromInfix()">Build from Infix</button>
+                    <button class="btn btn-info" onclick="infixToPrefix()">Convert to Prefix</button>
+
+                    <div class="divider"></div>
+
+                    <div class="input-group">
+                        <label>Prefix Formula:</label>
+                        <input type="text" id="prefixInput" placeholder="e.g., * + p q r">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="buildFromPrefix()">Build from Prefix</button>
+
+                    <div id="basicOutput" class="output-box info">
+👋 Welcome! Enter a formula and build a parse tree to get started.
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h2>🌳 Tree Information</h2>
+                    
+                    <button class="btn btn-info" onclick="showInfix()">Show Infix</button>
+                    <button class="btn btn-info" onclick="calculateHeight()">Calculate Height</button>
+                    <button class="btn btn-info" onclick="showTreeStructure()">Show Tree Structure</button>
+
+                    <div id="treeInfo" class="tree-visualization">
+Tree structure will appear here after building...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <div class="card">
+                    <h2>🔄 CNF Conversion & Validity</h2>
+                    
+                    <button class="btn btn-warning" onclick="convertToCNF()">Convert to CNF</button>
+                    <button class="btn btn-danger" onclick="checkValidity()">Check Validity</button>
+
+                    <div id="cnfOutput" class="output-box info">
+Build a parse tree first, then convert to CNF.
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h2>✅ Formula Evaluation</h2>
+                    
+                    <div id="evalInputs" class="eval-inputs">
+                        <!-- Dynamic evaluation inputs -->
+                    </div>
+
+                    <button class="btn btn-success" onclick="evaluateFormula()">Evaluate Formula</button>
+
+                    <div id="evalOutput" class="output-box info">
+Build a tree to see evaluation options.
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h2>📋 DIMACS Format</h2>
+                    
+                    <button class="btn btn-primary" onclick="convertToDIMACS()">Convert to DIMACS</button>
+                    <button class="btn btn-success" onclick="downloadDIMACS()">Download .cnf File</button>
+
+                    <div class="divider"></div>
+
+                    <div class="file-input-wrapper">
+                        <input type="file" id="dimacsFile" accept=".cnf" onchange="loadDIMACSFile(event)">
+                        <label for="dimacsFile" class="file-label">📁 Load DIMACS File</label>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>Or Paste DIMACS Content:</label>
+                        <textarea id="dimacsInput" rows="6" placeholder="p cnf 3 2&#10;1 -2 0&#10;-1 3 0"></textarea>
+                    </div>
+
+                    <button class="btn btn-info" onclick="parseDIMACS()">Parse DIMACS</button>
+                    <button class="btn btn-danger" onclick="checkDIMACSValidity()">Check DIMACS Validity</button>
+                    <button class="btn btn-warning" onclick="printTruthTable()">Print Truth Table</button>
+
+                    <div id="dimacsOutput" class="output-box info">
+DIMACS results will appear here.
+                    </div>
+
+                    <div id="mappingSection" style="display: none; margin-top: 20px;">
+                        <h3 style="color: #a78bfa; margin-bottom: 15px;">🔗 Variable Mapping</h3>
+                        <div id="mappingGrid" class="mapping-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        var currentTree = null;
+        var currentCNFTree = null;
+        var currentDIMACS = null;
+        var variableMapping = {};
+        var reverseMapping = {};
+        var nextVarId = 1;
+
+        // ============================================
+        // NODE CLASS
+        // ============================================
+        function Node(value, left, right) {
+            this.value = value;
+            this.left = left || null;
+            this.right = right || null;
+        }
+
+        Node.prototype.isOperator = function() {
+            return ['~', '+', '*', '>'].indexOf(this.value) !== -1;
+        };
+
+        Node.prototype.isLeaf = function() {
+            return this.left === null && this.right === null;
+        };
+
+        Node.prototype.clone = function() {
+            if (this === null) return null;
+            return new Node(
+                this.value,
+                this.left ? this.left.clone() : null,
+                this.right ? this.right.clone() : null
+            );
+        };
+
+        // ============================================
+        // PARSER FUNCTIONS
+        // ============================================
+        var parseIndex = 0;
+
+        function parseInfix(formula) {
+            parseIndex = 0;
+
+            function parseExpression() {
+                if (parseIndex < formula.length && formula[parseIndex] === '(') {
+                    parseIndex++;
+                }
+
+                if (parseIndex < formula.length && formula[parseIndex] === '~') {
+                    parseIndex++;
+                    var node = new Node('~');
+                    node.left = parseExpression();
+                    
+                    if (parseIndex < formula.length && formula[parseIndex] === ')') {
+                        parseIndex++;
+                    }
+                    return node;
+                }
+
+                var left = parseOperand();
+
+                if (parseIndex < formula.length && ['+', '*', '>'].indexOf(formula[parseIndex]) !== -1) {
+                    var operator = formula[parseIndex];
+                    parseIndex++;
+                    var right = parseOperand();
+                    var node = new Node(operator, left, right);
+                    
+                    if (parseIndex < formula.length && formula[parseIndex] === ')') {
+                        parseIndex++;
+                    }
+                    return node;
+                }
+
+                if (parseIndex < formula.length && formula[parseIndex] === ')') {
+                    parseIndex++;
+                }
+
+                return left;
+            }
+
+            function parseOperand() {
+                if (parseIndex >= formula.length) return null;
+
+                if (formula[parseIndex] === '(') {
+                    return parseExpression();
+                }
+
+                if (formula[parseIndex] === '~') {
+                    return parseExpression();
+                }
+
+                var variable = formula[parseIndex];
+                parseIndex++;
+                return new Node(variable);
+            }
+
+            return parseExpression();
+        }
+
+        function parsePrefix(prefix) {
+            var tokens = prefix.trim().split(/\s+/);
+            var index = 0;
+
+            function parse() {
+                if (index >= tokens.length) return null;
+
+                var token = tokens[index++];
+                var node = new Node(token);
+
+                if (['~', '+', '*', '>'].indexOf(token) !== -1) {
+                    node.left = parse();
+                    if (['+', '*', '>'].indexOf(token) !== -1) {
+                        node.right = parse();
+                    }
+                }
+
+                return node;
+            }
+
+            return parse();
+        }
+
+        // ============================================
+        // TREE CONVERSION FUNCTIONS
+        // ============================================
+        function treeToPrefix(node) {
+            if (!node) return '';
+            
+            var result = node.value;
+            if (node.left) result += ' ' + treeToPrefix(node.left);
+            if (node.right) result += ' ' + treeToPrefix(node.right);
+            
+            return result;
+        }
+
+        function treeToInfix(node) {
+            if (!node) return '';
+            
+            if (node.isLeaf()) {
+                return node.value;
+            }
+
+            if (node.value === '~') {
+                return '(~' + treeToInfix(node.left) + ')';
+            }
+
+            return '(' + treeToInfix(node.left) + node.value + treeToInfix(node.right) + ')';
+        }
+
+        function treeToString(node, indent) {
+            indent = indent || 0;
+            if (!node) return '';
+            
+            var result = '';
+            for (var i = 0; i < indent; i++) result += '  ';
+            result += node.value + '\n';
+            if (node.left) result += treeToString(node.left, indent + 1);
+            if (node.right) result += treeToString(node.right, indent + 1);
+            
+            return result;
+        }
+
+        // ============================================
+        // TREE ANALYSIS FUNCTIONS
+        // ============================================
+        function getTreeHeight(node) {
+            if (!node) return -1;
+            
+            var leftHeight = getTreeHeight(node.left);
+            var rightHeight = getTreeHeight(node.right);
+            
+            return 1 + Math.max(leftHeight, rightHeight);
+        }
+
+        function countNodes(node) {
+            if (!node) return 0;
+            return 1 + countNodes(node.left) + countNodes(node.right);
+        }
+
+        function extractVariables(node, vars) {
+            vars = vars || new Set();
+            if (!node) return vars;
+            
+            if (node.isLeaf()) {
+                vars.add(node.value);
+            }
+            
+            extractVariables(node.left, vars);
+            extractVariables(node.right, vars);
+            
+            return vars;
+        }
+
+        // ============================================
+        // EVALUATION FUNCTIONS
+        // ============================================
+        function evaluate(node, assignments) {
+            if (!node) return false;
+            
+            if (node.isLeaf()) {
+                return assignments[node.value] || false;
+            }
+
+            switch (node.value) {
+                case '~':
+                    return !evaluate(node.left, assignments);
+                case '+':
+                    return evaluate(node.left, assignments) || evaluate(node.right, assignments);
+                case '*':
+                    return evaluate(node.left, assignments) && evaluate(node.right, assignments);
+                case '>':
+                    return !evaluate(node.left, assignments) || evaluate(node.right, assignments);
+                default:
+                    return false;
+            }
+        }
+
+        // ============================================
+        // CNF CONVERSION FUNCTIONS
+        // ============================================
+        function cnfConversion(node) {
+            node = eliminateImplications(node);
+            node = moveNegationsInward(node);
+            node = distributeOrOverAnd(node);
+            return node;
+        }
+
+        function eliminateImplications(node) {
+            if (!node) return null;
+            
+            node.left = eliminateImplications(node.left);
+            node.right = eliminateImplications(node.right);
+            
+            if (node.value === '>') {
+                var notLeft = new Node('~');
+                notLeft.left = node.left;
+                return new Node('+', notLeft, node.right);
+            }
+            
+            return node;
+        }
+
+        function moveNegationsInward(node) {
+            if (!node) return null;
+            
+            if (node.value === '~') {
+                var child = node.left;
+                
+                if (child.value === '~') {
+                    return moveNegationsInward(child.left);
+                }
+                
+                if (child.value === '+') {
+                    var notLeft = new Node('~');
+                    notLeft.left = child.left;
+                    var notRight = new Node('~');
+                    notRight.left = child.right;
+                    return moveNegationsInward(new Node('*', notLeft, notRight));
+                }
+                
+                if (child.value === '*') {
+                    var notLeft = new Node('~');
+                    notLeft.left = child.left;
+                    var notRight = new Node('~');
+                    notRight.left = child.right;
+                    return moveNegationsInward(new Node('+', notLeft, notRight));
+                }
+                
+                node.left = moveNegationsInward(node.left);
+                return node;
+            }
+            
+            node.left = moveNegationsInward(node.left);
+            node.right = moveNegationsInward(node.right);
+            return node;
+        }
+
+        function distributeOrOverAnd(node) {
+            if (!node) return null;
+            
+            node.left = distributeOrOverAnd(node.left);
+            node.right = distributeOrOverAnd(node.right);
+            
+            if (node.value === '+') {
+                if (node.left && node.left.value === '*') {
+                    var a = node.left.left;
+                    var b = node.left.right;
+                    var c = node.right;
+                    return distributeOrOverAnd(new Node('*', 
+                        new Node('+', a, c.clone()), 
+                        new Node('+', b, c.clone())
+                    ));
+                }
+                
+                if (node.right && node.right.value === '*') {
+                    var a = node.left;
+                    var b = node.right.left;
+                    var c = node.right.right;
+                    return distributeOrOverAnd(new Node('*', 
+                        new Node('+', a.clone(), b), 
+                        new Node('+', a.clone(), c)
+                    ));
+                }
+            }
+            
+            return node;
+        }
+
+        // ============================================
+        // DIMACS CONVERSION FUNCTIONS
+        // ============================================
+        function extractClausesFromTree(node, clauses) {
+            if (!node) return;
+            
+            if (node.value === '*') {
+                extractClausesFromTree(node.left, clauses);
+                extractClausesFromTree(node.right, clauses);
+            } else {
+                var literals = [];
+                extractLiteralsFromClause(node, literals);
+                if (literals.length > 0) {
+                    clauses.push(literals);
+                }
+            }
+        }
+
+        function extractLiteralsFromClause(node, literals) {
+            if (!node) return;
+            
+            if (node.value === '+') {
+                extractLiteralsFromClause(node.left, literals);
+                extractLiteralsFromClause(node.right, literals);
+            } else if (node.value === '~') {
+                var varName = node.left.value;
+                if (!variableMapping[varName]) {
+                    variableMapping[varName] = nextVarId;
+                    reverseMapping[nextVarId] = varName;
+                    nextVarId++;
+                }
+                literals.push(-variableMapping[varName]);
+            } else if (node.isLeaf()) {
+                var varName = node.value;
+                if (!variableMapping[varName]) {
+                    variableMapping[varName] = nextVarId;
+                    reverseMapping[nextVarId] = varName;
+                    nextVarId++;
+                }
+                literals.push(variableMapping[varName]);
+            }
+        }
+
+        // ============================================
+        // UI UPDATE FUNCTIONS
+        // ============================================
+        function showOutput(elementId, message, type) {
+            var element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'output-box ' + (type || 'info');
+        }
+
+        function updateStats() {
+            if (currentTree) {
+                document.getElementById('statHeight').textContent = getTreeHeight(currentTree);
+                document.getElementById('statVars').textContent = extractVariables(currentTree).size;
+                document.getElementById('statNodes').textContent = countNodes(currentTree);
+            }
+            
+            if (currentCNFTree) {
+                var tempMapping = {};
+                var tempReverse = {};
+                var tempNextVar = 1;
+                
+                for (var k in variableMapping) tempMapping[k] = variableMapping[k];
+                for (var k in reverseMapping) tempReverse[k] = reverseMapping[k];
+                tempNextVar = nextVarId;
+                
+                variableMapping = {};
+                reverseMapping = {};
+                nextVarId = 1;
+                
+                var clauses = [];
+                extractClausesFromTree(currentCNFTree, clauses);
+                document.getElementById('statClauses').textContent = clauses.length;
+                
+                variableMapping = tempMapping;
+                reverseMapping = tempReverse;
+                nextVarId = tempNextVar;
+            }
+        }
+
+        function updateEvaluationInputs() {
+            if (!currentTree) return;
+
+            var vars = Array.from(extractVariables(currentTree)).sort();
+            var html = '';
+
+            for (var i = 0; i < vars.length; i++) {
+                html += '<div class="eval-input">';
+                html += '<label>' + vars[i] + ':</label>';
+                html += '<select id="eval_' + vars[i] + '">';
+                html += '<option value="true">True</option>';
+                html += '<option value="false">False</option>';
+                html += '</select>';
+                html += '</div>';
+            }
+
+            document.getElementById('evalInputs').innerHTML = html;
+            showOutput('evalOutput', '✅ Set truth values and click "Evaluate Formula"', 'info');
+        }
+
+        function showMapping() {
+            var section = document.getElementById('mappingSection');
+            var grid = document.getElementById('mappingGrid');
+            
+            if (Object.keys(variableMapping).length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            var html = '';
+            
+            var sortedVars = Object.keys(variableMapping).sort();
+            for (var i = 0; i < sortedVars.length; i++) {
+                var v = sortedVars[i];
+                html += '<div class="mapping-item">' + v + ' ↔ ' + variableMapping[v] + '</div>';
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        // ============================================
+        // UI BUTTON HANDLERS
+        // ============================================
+        function loadExample(formula) {
+            document.getElementById('infixInput').value = formula;
+            buildFromInfix();
+        }
+
+        function buildFromInfix() {
+            var infix = document.getElementById('infixInput').value.trim();
+            if (!infix) {
+                showOutput('basicOutput', 'Please enter an infix formula.', 'error');
+                return;
+            }
+
+            try {
+                currentTree = parseInfix(infix);
+                showOutput('basicOutput', '✅ Parse tree built successfully!\n\nInfix: ' + treeToInfix(currentTree) + '\nPrefix: ' + treeToPrefix(currentTree), 'success');
+                updateEvaluationInputs();
+                updateStats();
+            } catch (e) {
+                showOutput('basicOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function buildFromPrefix() {
+            var prefix = document.getElementById('prefixInput').value.trim();
+            if (!prefix) {
+                showOutput('basicOutput', 'Please enter a prefix formula.', 'error');
+                return;
+            }
+
+            try {
+                currentTree = parsePrefix(prefix);
+                showOutput('basicOutput', '✅ Parse tree built from prefix!\n\nInfix: ' + treeToInfix(currentTree) + '\nPrefix: ' + treeToPrefix(currentTree), 'success');
+                updateEvaluationInputs();
+                updateStats();
+            } catch (e) {
+                showOutput('basicOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function infixToPrefix() {
+            var infix = document.getElementById('infixInput').value.trim();
+            if (!infix) {
+                showOutput('basicOutput', 'Please enter an infix formula.', 'error');
+                return;
+            }
+
+            try {
+                var tree = parseInfix(infix);
+                var prefix = treeToPrefix(tree);
+                showOutput('basicOutput', '✅ Conversion Complete!\n\nInfix: ' + infix + '\nPrefix: ' + prefix, 'success');
+            } catch (e) {
+                showOutput('basicOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function showInfix() {
+            if (!currentTree) {
+                showOutput('treeInfo', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            showOutput('treeInfo', 'Infix Expression:\n' + treeToInfix(currentTree), 'info');
+        }
+
+        function calculateHeight() {
+            if (!currentTree) {
+                showOutput('treeInfo', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            var height = getTreeHeight(currentTree);
+            showOutput('treeInfo', 'Tree Height: ' + height, 'info');
+        }
+
+        function showTreeStructure() {
+            if (!currentTree) {
+                showOutput('treeInfo', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            showOutput('treeInfo', 'Tree Structure (Root at top):\n\n' + treeToString(currentTree), 'info');
+        }
+
+        function convertToCNF() {
+            if (!currentTree) {
+                showOutput('cnfOutput', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            try {
+                currentCNFTree = cnfConversion(currentTree.clone());
+                var cnfInfix = treeToInfix(currentCNFTree);
+                showOutput('cnfOutput', '✅ CNF Conversion Complete!\n\nOriginal: ' + treeToInfix(currentTree) + '\n\nCNF: ' + cnfInfix, 'success');
+                updateStats();
+            } catch (e) {
+                showOutput('cnfOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function checkValidity() {
+            if (!currentTree) {
+                showOutput('cnfOutput', '❌ Please build a tree first.', 'error');
+                return;
+            }
+
+            try {
+                var tree = currentCNFTree || cnfConversion(currentTree.clone());
+                
+                var savedMapping = {};
+                var savedReverse = {};
+                for (var k in variableMapping) savedMapping[k] = variableMapping[k];
+                for (var k in reverseMapping) savedReverse[k] = reverseMapping[k];
+                var savedNextVar = nextVarId;
+                
+                variableMapping = {};
+                reverseMapping = {};
+                nextVarId = 1;
+                
+                var clauses = [];
+                extractClausesFromTree(tree, clauses);
+                
+                if (clauses.length === 0) {
+                    showOutput('cnfOutput', '❌ No clauses found.', 'error');
+                    variableMapping = savedMapping;
+                    reverseMapping = savedReverse;
+                    nextVarId = savedNextVar;
+                    return;
+                }
+                
+                var isValid = true;
+                var details = 'Validity Check: A CNF formula is valid if EVERY clause contains complementary literals (P and ¬P)\n\n';
+                details += 'Formula: ' + treeToInfix(tree) + '\n';
+                details += 'Checking ' + clauses.length + ' clause(s)...\n\n';
+
+                for (var i = 0; i < clauses.length; i++) {
+                    var hasComplementary = false;
+                    var clauseLiterals = clauses[i];
+                    
+                    var clauseStr = clauseLiterals.map(function(lit) {
+                        var varName = reverseMapping[Math.abs(lit)];
+                        return lit > 0 ? varName : '¬' + varName;
+                    }).join(' ∨ ');
+                    
+                    for (var j = 0; j < clauseLiterals.length; j++) {
+                        for (var kk = j + 1; kk < clauseLiterals.length; kk++) {
+                            if (Math.abs(clauseLiterals[j]) === Math.abs(clauseLiterals[kk]) && 
+                                clauseLiterals[j] === -clauseLiterals[kk]) {
+                                hasComplementary = true;
+                                break;
+                            }
+                        }
+                        if (hasComplementary) break;
+                    }
+
+                    details += 'Clause ' + (i + 1) + ': (' + clauseStr + ')\n';
+                    details += '  DIMACS: ' + clauseLiterals.join(' ') + ' 0\n';
+                    details += '  ' + (hasComplementary ? '✓ Contains complementary pair - VALID' : '✗ No complementary pair - NOT VALID') + '\n\n';
+                    
+                    if (!hasComplementary) {
+                        isValid = false;
+                    }
+                }
+
+                details += '\n==================================================\n';
+                details += isValid ? '✅ Formula is VALID (Every clause is a tautology)\n' : '❌ Formula is NOT VALID (At least one clause lacks complementary literals)\n';
+                details += '\nDefinition: A CNF formula is valid iff each disjunction\ncontains a pair of complementary literals P and ¬P.';
+                
+                showOutput('cnfOutput', details, isValid ? 'success' : 'error');
+                
+                variableMapping = savedMapping;
+                reverseMapping = savedReverse;
+                nextVarId = savedNextVar;
+            } catch (e) {
+                showOutput('cnfOutput', '❌ Error: ' + e.message, 'error');
+            }
+        }
+
+        function evaluateFormula() {
+            if (!currentTree) {
+                showOutput('evalOutput', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            try {
+                var assignments = {};
+                var vars = Array.from(extractVariables(currentTree));
+                
+                for (var i = 0; i < vars.length; i++) {
+                    var select = document.getElementById('eval_' + vars[i]);
+                    if (select) {
+                        assignments[vars[i]] = select.value === 'true';
+                    }
+                }
+
+                var result = evaluate(currentTree, assignments);
+                var output = '✅ Evaluation Result\n\nFormula: ' + treeToInfix(currentTree) + '\n\nAssignments:\n';
+                
+                for (var v in assignments) {
+                    output += '  ' + v + ' = ' + assignments[v] + '\n';
+                }
+                
+                output += '\nResult: ' + result;
+                showOutput('evalOutput', output, 'success');
+            } catch (e) {
+                showOutput('evalOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function convertToDIMACS() {
+            if (!currentTree) {
+                showOutput('dimacsOutput', 'Please build a tree first.', 'error');
+                return;
+            }
+
+            try {
+                var tree = currentCNFTree || cnfConversion(currentTree.clone());
+                
+                variableMapping = {};
+                reverseMapping = {};
+                nextVarId = 1;
+                
+                var clauses = [];
+                extractClausesFromTree(tree, clauses);
+                
+                var numVars = Object.keys(variableMapping).length;
+                var numClauses = clauses.length;
+                
+                var dimacs = 'p cnf ' + numVars + ' ' + numClauses + '\n';
+                for (var i = 0; i < clauses.length; i++) {
+                    dimacs += clauses[i].join(' ') + ' 0\n';
+                }
+                
+                currentDIMACS = dimacs;
+                
+                var output = '✅ DIMACS Conversion Complete!\n\n' + dimacs;
+                showOutput('dimacsOutput', output, 'success');
+                
+                showMapping();
+            } catch (e) {
+                showOutput('dimacsOutput', 'Error: ' + e.message, 'error');
+            }
+        }
+
+        function downloadDIMACS() {
+            if (!currentDIMACS) {
+                showOutput('dimacsOutput', 'Please convert to DIMACS first.', 'error');
+                return;
+            }
+
+            var blob = new Blob([currentDIMACS], { type: 'text/plain' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'formula.cnf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showOutput('dimacsOutput', '✅ DIMACS file downloaded!', 'success');
+        }
+
+        function loadDIMACSFile(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('dimacsInput').value = e.target.result;
+                parseDIMACS();
+            };
+            reader.readAsText(file);
+        }
+
+        function parseDIMACSContent(content) {
+            var lines = content.split('\n');
+            var numVars = 0;
+            var numClauses = 0;
+            var clauses = [];
+
+            variableMapping = {};
+            reverseMapping = {};
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line || line.startsWith('c')) continue;
+
+                if (line.startsWith('p')) {
+                    var parts = line.split(/\s+/);
+                    numVars = parseInt(parts[2]);
+                    numClauses = parseInt(parts[3]);
+
+                    for (var v = 1; v <= numVars; v++) {
+                        var varName = 'x' + v;
+                        variableMapping[varName] = v;
+                        reverseMapping[v] = varName;
+                    }
+                    continue;
+                }
+
+                var literals = line.split(/\s+/).filter(function(x) { return x && x !== '0'; }).map(function(x) { return parseInt(x); });
+                if (literals.length > 0) {
+                    clauses.push(literals);
+                }
+            }
+
+            return { numVars: numVars, numClauses: numClauses, clauses: clauses };
+        }
+
+        function parseDIMACS() {
+            var content = document.getElementById('dimacsInput').value.trim();
+            if (!content) {
+                showOutput('dimacsOutput', 'Please paste DIMACS content or load a file.', 'error');
+                return;
+            }
+
+            try {
+                var parsed = parseDIMACSContent(content);
+                var numVars = parsed.numVars;
+                var numClauses = parsed.numClauses;
+                var clauses = parsed.clauses;
+
+                var output = '✅ DIMACS Parsed Successfully!\n\n';
+                output += 'Variables: ' + numVars + '\n';
+                output += 'Clauses: ' + numClauses + '\n\n';
+                output += 'Clauses:\n';
+
+                for (var i = 0; i < clauses.length; i++) {
+                    var clauseStr = clauses[i].map(function(lit) {
+                        var varName = reverseMapping[Math.abs(lit)];
+                        return lit > 0 ? varName : '¬' + varName;
+                    }).join(' ∨ ');
+                    output += (i + 1) + '. (' + clauseStr + ') → ' + clauses[i].join(' ') + ' 0\n';
+                }
+
+                showOutput('dimacsOutput', output, 'success');
+                showMapping();
+            } catch (e) {
+                showOutput('dimacsOutput', 'Error parsing DIMACS: ' + e.message, 'error');
+            }
+        }
+
+        function checkDIMACSValidity() {
+            var content = document.getElementById('dimacsInput').value.trim();
+            if (!content) {
+                showOutput('dimacsOutput', 'Please paste DIMACS content or load a file first.', 'error');
+                return;
+            }
+
+            try {
+                var parsed = parseDIMACSContent(content);
+                var clauses = parsed.clauses;
+
+                if (clauses.length === 0) {
+                    showOutput('dimacsOutput', '❌ No clauses found in DIMACS.', 'error');
+                    return;
+                }
+
+                var isValid = true;
+                var details = 'DIMACS Validity Check: A CNF formula is valid if EVERY clause contains complementary literals (P and ¬P)\n\n';
+                details += 'Checking ' + clauses.length + ' clause(s)...\n\n';
+
+                for (var i = 0; i < clauses.length; i++) {
+                    var hasComplementary = false;
+                    var clauseLiterals = clauses[i];
+
+                    var clauseStr = clauseLiterals.map(function(lit) {
+                        var varName = reverseMapping[Math.abs(lit)];
+                        return lit > 0 ? varName : '¬' + varName;
+                    }).join(' ∨ ');
+
+                    for (var j = 0; j < clauseLiterals.length; j++) {
+                        for (var kk = j + 1; kk < clauseLiterals.length; kk++) {
+                            if (Math.abs(clauseLiterals[j]) === Math.abs(clauseLiterals[kk]) &&
+                                clauseLiterals[j] === -clauseLiterals[kk]) {
+                                hasComplementary = true;
+                                break;
+                            }
+                        }
+                        if (hasComplementary) break;
+                    }
+
+                    details += 'Clause ' + (i + 1) + ': (' + clauseStr + ')\n';
+                    details += '  DIMACS: ' + clauseLiterals.join(' ') + ' 0\n';
+                    details += '  ' + (hasComplementary ? '✓ Contains complementary pair - VALID' : '✗ No complementary pair - NOT VALID') + '\n\n';
+
+                    if (!hasComplementary) {
+                        isValid = false;
+                    }
+                }
+
+                details += '\n==================================================\n';
+                details += isValid ? '✅ DIMACS Formula is VALID (Every clause is a tautology)\n' : '❌ DIMACS Formula is NOT VALID (At least one clause lacks complementary literals)\n';
+                details += '\nDefinition: A CNF formula is valid iff each disjunction\ncontains a pair of complementary literals P and ¬P.';
+
+                showOutput('dimacsOutput', details, isValid ? 'success' : 'error');
+                showMapping();
+            } catch (e) {
+                showOutput('dimacsOutput', '❌ Error checking DIMACS validity: ' + e.message, 'error');
+            }
+        }
+
+        function printTruthTable() {
+            var content = document.getElementById('dimacsInput').value.trim();
+            if (!content) {
+                showOutput('dimacsOutput', 'Please paste DIMACS content or load a file first.', 'error');
+                return;
+            }
+
+            try {
+                var parsed = parseDIMACSContent(content);
+                var numVars = parsed.numVars;
+                var clauses = parsed.clauses;
+
+                if (clauses.length === 0) {
+                    showOutput('dimacsOutput', '❌ No clauses found in DIMACS.', 'error');
+                    return;
+                }
+
+                var varNames = [];
+                for (var i = 1; i <= numVars; i++) {
+                    varNames.push(reverseMapping[i]);
+                }
+
+                var totalRows = Math.pow(2, numVars);
+                var table = 'Truth Table for DIMACS Formula\n\n';
+                table += 'Variables: ' + varNames.join(', ') + '\n';
+                table += 'Formula: ' + clauses.map(function(clause) {
+                    return '(' + clause.map(function(lit) {
+                        var varName = reverseMapping[Math.abs(lit)];
+                        return lit > 0 ? varName : '¬' + varName;
+                    }).join(' ∨ ') + ')';
+                }).join(' ∧ ') + '\n\n';
+
+                // Header
+                var header = '';
+                for (var i = 0; i < varNames.length; i++) {
+                    header += varNames[i] + '\t';
+                }
+                for (var i = 0; i < clauses.length; i++) {
+                    header += 'C' + (i + 1) + '\t';
+                }
+                header += 'Result\n';
+                table += header;
+
+                // Separator
+                table += ''.padEnd(header.length, '-') + '\n';
+
+                // Rows
+                for (var row = 0; row < totalRows; row++) {
+                    var assignment = {};
+                    var rowStr = '';
+
+                    // Generate assignment
+                    for (var v = 0; v < numVars; v++) {
+                        var value = (row & (1 << v)) !== 0;
+                        assignment[reverseMapping[v + 1]] = value;
+                        rowStr += (value ? 'T' : 'F') + '\t';
+                    }
+
+                    // Evaluate each clause
+                    var overallResult = true;
+                    for (var c = 0; c < clauses.length; c++) {
+                        var clause = clauses[c];
+                        var clauseResult = false;
+                        for (var l = 0; l < clause.length; l++) {
+                            var lit = clause[l];
+                            var varName = reverseMapping[Math.abs(lit)];
+                            var litValue = assignment[varName];
+                            if (lit < 0) litValue = !litValue;
+                            if (litValue) {
+                                clauseResult = true;
+                                break;
+                            }
+                        }
+                        rowStr += (clauseResult ? 'T' : 'F') + '\t';
+                        overallResult = overallResult && clauseResult;
+                    }
+
+                    rowStr += (overallResult ? 'T' : 'F') + '\n';
+                    table += rowStr;
+                }
+
+                showOutput('dimacsOutput', table, 'info');
+                showMapping();
+            } catch (e) {
+                showOutput('dimacsOutput', '❌ Error generating truth table: ' + e.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
